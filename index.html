@@ -440,8 +440,8 @@ function buildReport(){
     </div>
     <div class="card" style="margin-bottom:1rem;">
       <div class="g3">
+        <div class="met"><div class="ml">Avg turnover/week</div><div class="mv">${$f(Math.round(avgTO))}</div><div class="ms">${n} weeks recorded</div></div>
         <div class="met"><div class="ml">Avg wage/week</div><div class="mv">${$f(avgW)}</div><div class="ms" style="color:${awp>45?'#a32d2d':'#3b6d11'};">${$p(awp)} of turnover</div></div>
-        <div class="met"><div class="ml">Avg op.exp/week</div><div class="mv">${$f(avgO)}</div></div>
         <div class="met" style="background:${avgPr>=0?'#eaf3de':'#fcebeb'};"><div class="ml" style="color:${avgPr>=0?'#3b6d11':'#a32d2d'};">Avg profit/week</div><div class="mv" style="color:${avgPr>=0?'#3b6d11':'#a32d2d'};">${$f(avgPr)}</div></div>
       </div>
       <div class="ins ins-a" style="margin-top:10px;"><strong>Breakeven:</strong> ${s.name} needs <strong>${$f(bk)}/week</strong> to cover all costs.</div>
