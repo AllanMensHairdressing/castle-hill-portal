@@ -105,11 +105,12 @@ tr:last-child td{border-bottom:none;}
   .topbar{padding:0 .75rem;}
   .topbar-brand{font-size:13px;margin-right:.75rem;}
   .nav-tab{padding:.75rem .6rem;font-size:12px;}
-  .g2,.g3,.g4{grid-template-columns:1fr 1fr;}
+  .g2{grid-template-columns:1fr 1fr;}
+  .g3{grid-template-columns:1fr 1fr;}
   .g4{grid-template-columns:1fr 1fr;}
   .staff-grid{grid-template-columns:1fr;}
-  .dash-table-wrap{display:none;}
-  .dash-cards-mobile{display:flex;flex-direction:column;gap:8px;}
+  .dash-table-wrap{display:none!important;}
+  .dash-cards-mobile{display:flex!important;flex-direction:column;gap:8px;}
   .report-tabs{gap:4px;}
   .rtab{padding:5px 8px;font-size:11px;}
   .ytabs{gap:4px;}
@@ -120,6 +121,8 @@ tr:last-child td{border-bottom:none;}
 }
 @media (max-width: 480px) {
   .g2,.g3,.g4{grid-template-columns:1fr;}
+  .nav-tab{padding:.75rem .5rem;font-size:11px;}
+}
   .nav-tab{padding:.75rem .5rem;font-size:11px;}
 }
 </style>
@@ -779,20 +782,19 @@ const STAFF = [
     id:"majid",name:"Majid",role:"Barber",
     color:{bg:"#EEEDFE",fg:"#3C3489"},
     years:{
-      "2024-25":{
-        Apr:{weeks:[{date:"Apr 2025 avg",turnover:3274,hrs:"30:00",wage:1250,opexp:850}]}
-      },
       "2025-26":{
-        Jul:{weeks:[{date:"Jul 2025 avg",turnover:3100,hrs:"30:00",wage:1220,opexp:830}]},
-        Aug:{weeks:[{date:"Aug 2025 avg",turnover:2900,hrs:"29:00",wage:1180,opexp:810}]},
-        Sep:{weeks:[{date:"Sep 2025 avg",turnover:3000,hrs:"30:00",wage:1200,opexp:820}]},
-        Oct:{weeks:[{date:"Oct 2025 avg",turnover:3200,hrs:"31:00",wage:1240,opexp:840}]},
-        Nov:{weeks:[{date:"Nov 2025 avg",turnover:3100,hrs:"30:00",wage:1220,opexp:830}]},
-        Dec:{weeks:[{date:"Dec 2025 avg",turnover:3050,hrs:"30:00",wage:1210,opexp:825}]},
-        Jan:{weeks:[{date:"Jan 2026 avg",turnover:2950,hrs:"29:00",wage:1190,opexp:815}]},
-        Feb:{weeks:[{date:"Feb 2026 avg",turnover:3000,hrs:"30:00",wage:1200,opexp:820}]},
-        Mar:{weeks:[{date:"Mar 2026 avg",turnover:2900,hrs:"29:00",wage:1180,opexp:810}]},
-        Apr:{weeks:[{date:"Apr 2026 avg",turnover:2800,hrs:"28:00",wage:1160,opexp:800}]}
+        Apr:{weeks:[
+          {date:"10 Apr 2026",turnover:2640,hrs:"39:45",wage:1861,opexp:632},
+          {date:"17 Apr 2026",turnover:3406,hrs:"48:45",wage:2297,opexp:1210},
+          {date:"24 Apr 2026",turnover:3776,hrs:"49:45",wage:2423,opexp:1080}
+        ]},
+        May:{weeks:[
+          {date:"1 May 2026",turnover:3272,hrs:"43:45",wage:2317,opexp:1512},
+          {date:"8 May 2026",turnover:3470,hrs:"53:00",wage:2567,opexp:987},
+          {date:"15 May 2026",turnover:3657,hrs:"50:00",wage:2355,opexp:1412},
+          {date:"22 May 2026",turnover:3488,hrs:"33:30",wage:2378,opexp:1040},
+          {date:"29 May 2026",turnover:3090,hrs:"50:00",wage:2360,opexp:1230}
+        ]}
       }
     }
   },
@@ -800,24 +802,44 @@ const STAFF = [
     id:"jeni",name:"Jeni",role:"Barber",
     color:{bg:"#FCEBEB",fg:"#791F1F"},
     years:{
-      "2024-25":{
-        Dec:{weeks:[{date:"Dec 2024 avg",turnover:1313,hrs:"22:00",wage:830,opexp:550}]},
-        Jan:{weeks:[{date:"Jan 2025 avg",turnover:1968,hrs:"25:00",wage:1260,opexp:680}]},
-        Feb:{weeks:[{date:"Feb 2025 avg",turnover:1556,hrs:"23:00",wage:1105,opexp:620}]},
-        Mar:{weeks:[{date:"Mar 2025 avg",turnover:1276,hrs:"22:00",wage:1020,opexp:580}]},
-        Apr:{weeks:[{date:"Apr 2025 avg",turnover:1475,hrs:"23:00",wage:1090,opexp:605}]}
-      },
       "2025-26":{
-        Jul:{weeks:[{date:"Jul 2025 avg",turnover:1400,hrs:"22:00",wage:900,opexp:560}]},
-        Aug:{weeks:[{date:"Aug 2025 avg",turnover:1300,hrs:"21:00",wage:870,opexp:540}]},
-        Sep:{weeks:[{date:"Sep 2025 avg",turnover:1350,hrs:"22:00",wage:885,opexp:550}]},
-        Oct:{weeks:[{date:"Oct 2025 avg",turnover:1450,hrs:"23:00",wage:910,opexp:565}]},
-        Nov:{weeks:[{date:"Nov 2025 avg",turnover:1380,hrs:"22:00",wage:895,opexp:555}]},
-        Dec:{weeks:[{date:"Dec 2025 avg",turnover:1320,hrs:"21:00",wage:875,opexp:542}]},
-        Jan:{weeks:[{date:"Jan 2026 avg",turnover:1360,hrs:"22:00",wage:888,opexp:552}]},
-        Feb:{weeks:[{date:"Feb 2026 avg",turnover:1420,hrs:"22:00",wage:905,opexp:560}]},
-        Mar:{weeks:[{date:"Mar 2026 avg",turnover:1370,hrs:"22:00",wage:892,opexp:554}]},
-        Apr:{weeks:[{date:"Apr 2026 avg",turnover:1300,hrs:"21:00",wage:870,opexp:540}]}
+        Dec:{weeks:[
+          {date:"12 Dec 2025",turnover:1270,hrs:"24:00",wage:1001,opexp:578},
+          {date:"19 Dec 2025",turnover:1970,hrs:"24:00",wage:1001,opexp:558},
+          {date:"26 Dec 2025",turnover:1153,hrs:"15:30",wage:699,opexp:578},
+          {date:"2 Jan 2026",turnover:860,hrs:"13:00",wage:590,opexp:393}
+        ]},
+        Jan:{weeks:[
+          {date:"9 Jan 2026",turnover:2071,hrs:"30:00",wage:1181,opexp:718},
+          {date:"16 Jan 2026",turnover:1646,hrs:"30:00",wage:1155,opexp:712},
+          {date:"23 Jan 2026",turnover:1928,hrs:"39:15",wage:1448,opexp:920},
+          {date:"30 Jan 2026",turnover:2225,hrs:"32:00",wage:1236,opexp:782}
+        ]},
+        Feb:{weeks:[
+          {date:"6 Feb 2026",turnover:1389,hrs:"24:45",wage:942,opexp:600},
+          {date:"13 Feb 2026",turnover:2023,hrs:"40:00",wage:1476,opexp:982},
+          {date:"20 Feb 2026",turnover:1489,hrs:"26:30",wage:1076,opexp:628},
+          {date:"27 Feb 2026",turnover:1323,hrs:"24:30",wage:947,opexp:606}
+        ]},
+        Mar:{weeks:[
+          {date:"6 Mar 2026",turnover:1224,hrs:"23:30",wage:981,opexp:583},
+          {date:"13 Mar 2026",turnover:1007,hrs:"23:30",wage:1001,opexp:580},
+          {date:"20 Mar 2026",turnover:1300,hrs:"23:45",wage:993,opexp:587},
+          {date:"27 Mar 2026",turnover:1575,hrs:"23:30",wage:1118,opexp:588}
+        ]},
+        Apr:{weeks:[
+          {date:"3 Apr 2026",turnover:1736,hrs:"29:30",wage:1176,opexp:788},
+          {date:"10 Apr 2026",turnover:1318,hrs:"23:30",wage:1198,opexp:625},
+          {date:"17 Apr 2026",turnover:1187,hrs:"23:30",wage:983,opexp:583},
+          {date:"24 Apr 2026",turnover:1657,hrs:"23:30",wage:981,opexp:752}
+        ]},
+        May:{weeks:[
+          {date:"1 May 2026",turnover:925,hrs:"14:45",wage:591,opexp:510},
+          {date:"8 May 2026",turnover:1395,hrs:"23:30",wage:991,opexp:627},
+          {date:"15 May 2026",turnover:1498,hrs:"23:30",wage:981,opexp:664},
+          {date:"22 May 2026",turnover:1302,hrs:"23:15",wage:981,opexp:722},
+          {date:"29 May 2026",turnover:1473,hrs:"23:30",wage:988,opexp:578}
+        ]}
       }
     }
   },
@@ -826,16 +848,12 @@ const STAFF = [
     color:{bg:"#F1EFE8",fg:"#444441"},
     years:{
       "2025-26":{
-        Jul:{weeks:[{date:"Jul 2025 avg",turnover:1800,hrs:"24:00",wage:850,opexp:560}]},
-        Aug:{weeks:[{date:"Aug 2025 avg",turnover:1650,hrs:"23:00",wage:820,opexp:540}]},
-        Sep:{weeks:[{date:"Sep 2025 avg",turnover:1700,hrs:"23:00",wage:830,opexp:545}]},
-        Oct:{weeks:[{date:"Oct 2025 avg",turnover:1900,hrs:"25:00",wage:870,opexp:570}]},
-        Nov:{weeks:[{date:"Nov 2025 avg",turnover:1820,hrs:"24:00",wage:855,opexp:560}]},
-        Dec:{weeks:[{date:"Dec 2025 avg",turnover:1750,hrs:"23:00",wage:840,opexp:550}]},
-        Jan:{weeks:[{date:"Jan 2026 avg",turnover:1780,hrs:"23:00",wage:848,opexp:555}]},
-        Feb:{weeks:[{date:"Feb 2026 avg",turnover:1850,hrs:"24:00",wage:862,opexp:562}]},
-        Mar:{weeks:[{date:"Mar 2026 avg",turnover:1720,hrs:"23:00",wage:835,opexp:548}]},
-        Apr:{weeks:[{date:"Apr 2026 avg",turnover:1680,hrs:"23:00",wage:828,opexp:544}]}
+        May:{weeks:[
+          {date:"8 May 2026",turnover:1130,hrs:"24:30",wage:996,opexp:653},
+          {date:"15 May 2026",turnover:2313,hrs:"37:30",wage:1672,opexp:1059},
+          {date:"22 May 2026",turnover:1916,hrs:"37:30",wage:1562,opexp:1055},
+          {date:"29 May 2026",turnover:1687,hrs:"37:00",wage:1672,opexp:910}
+        ]}
       }
     }
   },
@@ -844,16 +862,10 @@ const STAFF = [
     color:{bg:"#FBEAF0",fg:"#72243E"},
     years:{
       "2025-26":{
-        Jul:{weeks:[{date:"Jul 2025 avg",turnover:2000,hrs:"25:00",wage:920,opexp:580}]},
-        Aug:{weeks:[{date:"Aug 2025 avg",turnover:1850,hrs:"24:00",wage:890,opexp:560}]},
-        Sep:{weeks:[{date:"Sep 2025 avg",turnover:1920,hrs:"24:00",wage:905,opexp:570}]},
-        Oct:{weeks:[{date:"Oct 2025 avg",turnover:2100,hrs:"26:00",wage:945,opexp:595}]},
-        Nov:{weeks:[{date:"Nov 2025 avg",turnover:2000,hrs:"25:00",wage:920,opexp:580}]},
-        Dec:{weeks:[{date:"Dec 2025 avg",turnover:1950,hrs:"24:00",wage:910,opexp:572}]},
-        Jan:{weeks:[{date:"Jan 2026 avg",turnover:1980,hrs:"25:00",wage:916,opexp:576}]},
-        Feb:{weeks:[{date:"Feb 2026 avg",turnover:2050,hrs:"25:00",wage:930,opexp:582}]},
-        Mar:{weeks:[{date:"Mar 2026 avg",turnover:1960,hrs:"24:00",wage:912,opexp:573}]},
-        Apr:{weeks:[{date:"Apr 2026 avg",turnover:1900,hrs:"24:00",wage:900,opexp:566}]}
+        May:{weeks:[
+          {date:"22 May 2026",turnover:865,hrs:"14:00",wage:700,opexp:434},
+          {date:"29 May 2026",turnover:785,hrs:"13:30",wage:700,opexp:332}
+        ]}
       }
     }
   }
