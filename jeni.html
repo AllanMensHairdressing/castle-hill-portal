@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeni — Performance Report</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px;}
+.topbar{background:#fff;border-bottom:1px solid #e5e5e3;padding:0 1.25rem;display:flex;align-items:center;gap:12px;}
+.brand{font-size:14px;font-weight:600;padding:1rem 0;}
+.brand span{font-weight:400;color:#888;margin-left:4px;}
+.app{max-width:800px;margin:0 auto;padding:1.25rem;}
+.card{background:#fff;border:1px solid #e5e5e3;border-radius:12px;padding:1.25rem;margin-bottom:1rem;}
+.card0{background:#fff;border:1px solid #e5e5e3;border-radius:12px;overflow:hidden;margin-bottom:1rem;}
+.met{background:#f5f5f3;border-radius:8px;padding:12px 14px;}
+.ml{font-size:11px;color:#888;margin-bottom:5px;}
+.mv{font-size:20px;font-weight:600;}
+.ms{font-size:11px;color:#aaa;margin-top:2px;}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
+.sl{font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#aaa;margin-bottom:10px;}
+.avt{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;}
+.yt{display:flex;gap:6px;margin-bottom:14px;}
+.ytb{padding:5px 12px;border-radius:6px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;color:#666;}
+.ytb.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+.mbar{margin-bottom:12px;}
+.mbar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.mbar-label{font-size:12px;font-weight:500;width:36px;flex-shrink:0;}
+.mbar-val{font-size:13px;font-weight:500;flex:1;}
+.mbar-badge{font-size:11px;padding:2px 8px;border-radius:4px;flex-shrink:0;}
+.mbar-track{height:10px;background:#f0f0ee;border-radius:5px;position:relative;}
+.mbar-fill{height:10px;border-radius:5px;}
+.mbar-line{position:absolute;top:-3px;width:2px;height:16px;background:#854f0b;border-radius:1px;}
+.ins{padding:12px 14px;border-radius:8px;font-size:12px;line-height:1.6;}
+.ins-g{background:#eaf3de;color:#27500a;}
+.ins-a{background:#faeeda;color:#633806;}
+.ins-r{background:#fcebeb;color:#7a1f1f;}
+.wk-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0ee;font-size:13px;}
+.wk-row:last-child{border-bottom:none;}
+.badge{font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;}
+@media(max-width:600px){.g3{grid-template-columns:1fr 1fr;}}
+@media print{.topbar,.noprint{display:none!important;}body{background:#fff;}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">Castle Hill Barbershop <span>Staff Report</span></div>
+  <div style="margin-left:auto;font-size:11px;color:#aaa;" id="upd"></div>
+</div>
+<div class="app">
+  <div class="card" style="margin-bottom:1rem;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #f0f0ee;">
+      <div class="avt" id="avt"></div>
+      <div>
+        <div style="font-size:20px;font-weight:600;" id="sname"></div>
+        <div style="font-size:12px;color:#aaa;" id="srole"></div>
+      </div>
+      <button class="noprint" onclick="window.print()" style="margin-left:auto;padding:6px 14px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;font-size:12px;">Print</button>
+    </div>
+    <div class="yt" id="yr-tabs"></div>
+    <div class="g3" id="metrics" style="margin-bottom:12px;"></div>
+    <div class="ins ins-a" id="breakeven"></div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem;">
+    <div class="sl" style="margin-bottom:14px;">Monthly performance vs target</div>
+    <div id="month-bars"></div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem;">
+    <div class="sl" style="margin-bottom:12px;">Turnover trend</div>
+    <div style="position:relative;height:200px;"><canvas id="trend-chart" role="img" aria-label="Turnover trend"></canvas></div>
+    <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:#888;">
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#378ADD;display:inline-block;"></span>Turnover</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:16px;height:2px;border-top:2px dashed #854f0b;display:inline-block;"></span>Target</span>
+    </div>
+  </div>
+
+  <div class="card0">
+    <div style="padding:12px 14px;border-bottom:1px solid #e5e5e3;font-size:13px;font-weight:600;">Weekly results</div>
+    <div id="weekly-list" style="padding:0 14px;"></div>
+  </div>
+
+  <div class="ins" id="summary" style="margin-top:1rem;"></div>
+</div>
+
+<script>
+const STAFF=[
+  {id:"ronald",name:"Ronald",role:"Barber",c:{bg:"#E6F1FB",fg:"#0C447C"},years:{
+    "2023-24":{
+      Jul:{weeks:[{date:"7 Jul 2023",t:2012,h:"24:00",w:764,o:570},{date:"14 Jul 2023",t:1794,h:"24:00",w:730,o:573},{date:"21 Jul 2023",t:1869,h:"24:00",w:764,o:572},{date:"28 Jul 2023",t:1555,h:"24:00",w:730,o:570},{date:"4 Aug 2023",t:2253,h:"32:00",w:950,o:765}]},
+      Aug:{weeks:[{date:"11 Aug 2023",t:1770,h:"24:00",w:741,o:658},{date:"18 Aug 2023",t:1743,h:"24:00",w:772,o:653},{date:"25 Aug 2023",t:1677,h:"24:00",w:772,o:658},{date:"1 Sep 2023",t:1932,h:"24:00",w:772,o:656}]},
+      Sep:{weeks:[{date:"8 Sep 2023",t:1865,h:"24:00",w:772,o:651},{date:"15 Sep 2023",t:1857,h:"24:00",w:778,o:648},{date:"22 Sep 2023",t:2651,h:"32:00",w:1016,o:993},{date:"29 Sep 2023",t:1997,h:"24:00",w:800,o:708},{date:"6 Oct 2023",t:2440,h:"32:00",w:1005,o:900}]},
+      Oct:{weeks:[{date:"13 Oct 2023",t:1942,h:"24:00",w:778,o:670},{date:"20 Oct 2023",t:1860,h:"24:00",w:772,o:663},{date:"27 Oct 2023",t:1608,h:"24:00",w:772,o:663},{date:"3 Nov 2023",t:1646,h:"24:00",w:772,o:555}]},
+      Nov:{weeks:[{date:"10 Nov 2023",t:1610,h:"24:00",w:772,o:562},{date:"17 Nov 2023",t:1708,h:"24:00",w:778,o:545},{date:"24 Nov 2023",t:1665,h:"24:00",w:772,o:565},{date:"1 Dec 2023",t:2367,h:"32:00",w:1011,o:817}]},
+      Dec:{weeks:[{date:"8 Dec 2023",t:2473,h:"32:00",w:1005,o:794},{date:"15 Dec 2023",t:2684,h:"32:00",w:1061,o:740},{date:"22 Dec 2023",t:2130,h:"24:00",w:800,o:613},{date:"29 Dec 2023",t:1625,h:"22:30",w:731,o:668},{date:"5 Jan 2024",t:2533,h:"32:00",w:1066,o:905}]},
+      Jan:{weeks:[{date:"12 Jan 2024",t:1782,h:"24:00",w:800,o:608},{date:"19 Jan 2024",t:1764,h:"24:00",w:783,o:675},{date:"26 Jan 2024",t:1906,h:"30:30",w:1164,o:775},{date:"2 Feb 2024",t:2467,h:"30:30",w:962,o:842}]},
+      Feb:{weeks:[{date:"9 Feb 2024",t:2217,h:"31:30",w:991,o:751},{date:"16 Feb 2024",t:2062,h:"32:00",w:1004,o:902},{date:"23 Feb 2024",t:1532,h:"23:00",w:743,o:584},{date:"1 Mar 2024",t:1674,h:"23:00",w:743,o:586}]},
+      Mar:{weeks:[{date:"8 Mar 2024",t:2295,h:"30:30",w:1137,o:890},{date:"15 Mar 2024",t:1652,h:"23:30",w:758,o:639},{date:"22 Mar 2024",t:1802,h:"24:00",w:800,o:588},{date:"29 Mar 2024",t:1226,h:"24:00",w:772,o:603}]},
+      Apr:{weeks:[{date:"5 Apr 2024",t:1719,h:"24:00",w:772,o:634},{date:"12 Apr 2024",t:1835,h:"24:00",w:777,o:554},{date:"19 Apr 2024",t:2332,h:"32:00",w:1011,o:853},{date:"26 Apr 2024",t:1322,h:"24:00",w:805,o:688}]},
+      May:{weeks:[{date:"3 May 2024",t:1610,h:"23:00",w:743,o:589},{date:"10 May 2024",t:1743,h:"24:00",w:777,o:632},{date:"17 May 2024",t:1985,h:"23:30",w:791,o:606},{date:"24 May 2024",t:1746,h:"24:00",w:763,o:540},{date:"31 May 2024",t:2486,h:"30:30",w:1137,o:719}]},
+      Jun:{weeks:[{date:"7 Jun 2024",t:1699,h:"23:00",w:743,o:441},{date:"14 Jun 2024",t:2323,h:"32:30",w:1051,o:688},{date:"21 Jun 2024",t:1796,h:"23:30",w:785,o:494},{date:"28 Jun 2024",t:1928,h:"24:00",w:775,o:473}]}
+    },
+    "2024-25":{
+      Jul:{weeks:[{date:"5 Jul 2024",t:1845,h:"24:00",w:774,o:505},{date:"12 Jul 2024",t:1698,h:"23:00",w:756,o:471},{date:"19 Jul 2024",t:1834,h:"24:15",w:793,o:459},{date:"26 Jul 2024",t:2390,h:"30:30",w:1165,o:651},{date:"2 Aug 2024",t:1776,h:"24:00",w:913,o:470}]},
+      Aug:{weeks:[{date:"9 Aug 2024",t:1838,h:"24:00",w:785,o:643},{date:"16 Aug 2024",t:1725,h:"24:00",w:785,o:547},{date:"23 Aug 2024",t:1650,h:"24:00",w:785,o:562},{date:"30 Aug 2024",t:1670,h:"24:00",w:785,o:547}]},
+      Sep:{weeks:[{date:"6 Sep 2024",t:1695,h:"24:00",w:790,o:549},{date:"13 Sep 2024",t:1817,h:"24:00",w:784,o:547},{date:"20 Sep 2024",t:669,h:"23:30",w:853,o:537}]},
+      Oct:{weeks:[{date:"18 Oct 2024",t:1104,h:"24:00",w:754,o:539},{date:"25 Oct 2024",t:2519,h:"32:00",w:1041,o:686},{date:"1 Nov 2024",t:1884,h:"24:00",w:785,o:546}]},
+      Nov:{weeks:[{date:"8 Nov 2024",t:1896,h:"24:00",w:785,o:546},{date:"15 Nov 2024",t:2311,h:"32:00",w:1019,o:644},{date:"22 Nov 2024",t:2320,h:"32:00",w:1019,o:682},{date:"29 Nov 2024",t:1708,h:"24:00",w:785,o:584}]},
+      Dec:{weeks:[{date:"6 Dec 2024",t:1702,h:"24:00",w:785,o:549},{date:"13 Dec 2024",t:1633,h:"24:00",w:799,o:545},{date:"20 Dec 2024",t:1877,h:"24:00",w:813,o:554},{date:"27 Dec 2024",t:1223,h:"23:30",w:797,o:586},{date:"3 Jan 2025",t:1450,h:"31:00",w:1015,o:734}]},
+      Jan:{weeks:[{date:"10 Jan 2025",t:1883,h:"29:30",w:965,o:733},{date:"17 Jan 2025",t:1727,h:"29:30",w:979,o:775},{date:"24 Jan 2025",t:2185,h:"31:15",w:1035,o:824},{date:"31 Jan 2025",t:2103,h:"31:00",w:1025,o:748}]},
+      Feb:{weeks:[{date:"7 Feb 2025",t:3131,h:"39:30",w:1545,o:954},{date:"14 Feb 2025",t:2356,h:"31:45",w:1075,o:824},{date:"21 Feb 2025",t:2283,h:"29:45",w:1161,o:708},{date:"28 Feb 2025",t:1869,h:"24:45",w:843,o:560}]},
+      Mar:{weeks:[{date:"7 Mar 2025",t:1650,h:"24:30",w:833,o:584},{date:"14 Mar 2025",t:1639,h:"23:30",w:797,o:537},{date:"21 Mar 2025",t:1733,h:"23:45",w:811,o:553},{date:"28 Mar 2025",t:2813,h:"38:30",w:1454,o:853}]},
+      Apr:{weeks:[{date:"4 Apr 2025",t:1641,h:"24:00",w:813,o:562},{date:"11 Apr 2025",t:1784,h:"24:00",w:813,o:524},{date:"18 Apr 2025",t:1096,h:"24:00",w:813,o:585},{date:"25 Apr 2025",t:1265,h:"23:45",w:1071,o:673}]},
+      May:{weeks:[{date:"2 May 2025",t:1672,h:"24:00",w:818,o:530},{date:"9 May 2025",t:1672,h:"24:30",w:831,o:559},{date:"16 May 2025",t:1519,h:"23:30",w:797,o:532},{date:"23 May 2025",t:1623,h:"24:30",w:831,o:580},{date:"30 May 2025",t:1531,h:"24:30",w:810,o:547}]},
+      Jun:{weeks:[{date:"6 Jun 2025",t:1682,h:"24:15",w:918,o:572},{date:"13 Jun 2025",t:1437,h:"24:45",w:921,o:581},{date:"20 Jun 2025",t:1659,h:"24:45",w:921,o:589},{date:"27 Jun 2025",t:1898,h:"32:45",w:1197,o:753}]}
+    },
+    "2025-26":{
+      Jul:{weeks:[{date:"4 Jul 2025",t:1763,h:"24:45",w:953,o:552},{date:"11 Jul 2025",t:1877,h:"32:00",w:1179,o:735},{date:"18 Jul 2025",t:2090,h:"32:00",w:1210,o:824},{date:"25 Jul 2025",t:1625,h:"24:00",w:928,o:597},{date:"1 Aug 2025",t:1450,h:"24:00",w:931,o:507}]},
+      Aug:{weeks:[{date:"8 Aug 2025",t:1604,h:"16:45",w:942,o:402},{date:"15 Aug 2025",t:1398,h:"24:00",w:928,o:575},{date:"22 Aug 2025",t:1749,h:"24:00",w:928,o:543},{date:"29 Aug 2025",t:1690,h:"24:30",w:947,o:585}]},
+      Sep:{weeks:[{date:"5 Sep 2025",t:1557,h:"24:00",w:928,o:900},{date:"12 Sep 2025",t:1745,h:"24:00",w:928,o:646},{date:"19 Sep 2025",t:1544,h:"24:00",w:928,o:514},{date:"26 Sep 2025",t:1784,h:"24:15",w:936,o:633},{date:"3 Oct 2025",t:2218,h:"32:00",w:1210,o:678}]},
+      Oct:{weeks:[{date:"10 Oct 2025",t:2369,h:"32:30",w:1233,o:823},{date:"17 Oct 2025",t:1997,h:"17:00",w:991,o:373},{date:"24 Oct 2025",t:1838,h:"24:30",w:955,o:520},{date:"31 Oct 2025",t:1925,h:"24:15",w:945,o:548}]},
+      Nov:{weeks:[{date:"7 Nov 2025",t:1784,h:"24:00",w:931,o:561},{date:"14 Nov 2025",t:1789,h:"24:00",w:931,o:595},{date:"21 Nov 2025",t:2048,h:"24:00",w:965,o:623},{date:"28 Nov 2025",t:1889,h:"24:00",w:931,o:592}]},
+      Dec:{weeks:[{date:"5 Dec 2025",t:2083,h:"24:30",w:947,o:603},{date:"12 Dec 2025",t:1906,h:"24:00",w:936,o:578},{date:"19 Dec 2025",t:2378,h:"24:45",w:1012,o:575},{date:"26 Dec 2025",t:1283,h:"30:00",w:1144,o:834},{date:"2 Jan 2026",t:1131,h:"21:30",w:850,o:650}]},
+      Jan:{weeks:[{date:"9 Jan 2026",t:1986,h:"24:00",w:936,o:575},{date:"16 Jan 2026",t:2033,h:"23:00",w:939,o:546},{date:"23 Jan 2026",t:1679,h:"24:00",w:931,o:562},{date:"30 Jan 2026",t:2044,h:"24:00",w:956,o:586}]},
+      Feb:{weeks:[{date:"6 Feb 2026",t:2153,h:"24:45",w:991,o:600},{date:"13 Feb 2026",t:1965,h:"24:45",w:971,o:608},{date:"20 Feb 2026",t:1762,h:"24:15",w:945,o:575},{date:"27 Feb 2026",t:1787,h:"23:30",w:916,o:581}]},
+      Mar:{weeks:[{date:"6 Mar 2026",t:1737,h:"24:00",w:931,o:595},{date:"13 Mar 2026",t:1639,h:"24:15",w:939,o:599},{date:"20 Mar 2026",t:1882,h:"24:15",w:939,o:599},{date:"27 Mar 2026",t:2458,h:"30:45",w:1382,o:770}]},
+      Apr:{weeks:[{date:"3 Apr 2026",t:1346,h:"24:00",w:965,o:641},{date:"10 Apr 2026",t:2055,h:"24:00",w:1235,o:638},{date:"17 Apr 2026",t:627,h:"23:45",w:993,o:590}]},
+      May:{weeks:[{date:"22 May 2026",t:1460,h:"15:45",w:565,o:489},{date:"29 May 2026",t:1577,h:"24:30",w:953,o:603}]}
+    }
+  }},
+  {id:"mona",name:"Mona",role:"Barber",c:{bg:"#E1F5EE",fg:"#085041"},years:{
+    "2023-24":{
+      Jul:{weeks:[{date:"Jul 2023",t:3299,h:"42:06",w:2258,o:1301}]},Aug:{weeks:[{date:"Aug 2023",t:3482,h:"48:52",w:2175,o:1528}]},Sep:{weeks:[{date:"Sep 2023",t:3790,h:"36:12",w:2310,o:819}]},Oct:{weeks:[{date:"Oct 2023",t:3052,h:"38:52",w:1999,o:975}]},Nov:{weeks:[{date:"Nov 2023",t:2617,h:"36:15",w:1591,o:860}]},Dec:{weeks:[{date:"Dec 2023",t:2895,h:"35:06",w:1507,o:909}]},Jan:{weeks:[{date:"Jan 2024",t:1758,h:"23:15",w:1021,o:580}]},Feb:{weeks:[{date:"Feb 2024",t:2782,h:"40:00",w:1746,o:1030}]},Mar:{weeks:[{date:"Mar 2024",t:2300,h:"36:18",w:1730,o:683}]},Apr:{weeks:[{date:"Apr 2024",t:1145,h:"26:30",w:1116,o:513}]},May:{weeks:[{date:"May 2024",t:1235,h:"31:00",w:1263,o:578}]},Jun:{weeks:[{date:"Jun 2024",t:1552,h:"39:26",w:1593,o:822}]}
+    },
+    "2024-25":{
+      Jul:{weeks:[{date:"Jul 2024",t:1932,h:"40:51",w:1725,o:739}]},Aug:{weeks:[{date:"Aug 2024",t:1882,h:"38:15",w:1637,o:726}]},Sep:{weeks:[{date:"Sep 2024",t:1575,h:"35:37",w:1557,o:682}]},Oct:{weeks:[{date:"Oct 2024",t:1745,h:"35:48",w:1585,o:677}]},
+      Nov:{weeks:[{date:"15 Nov 2024",t:917,h:"16:30",w:679,o:332},{date:"22 Nov 2024",t:3028,h:"46:00",w:1846,o:981},{date:"29 Nov 2024",t:2292,h:"31:00",w:1297,o:755}]},
+      Dec:{weeks:[{date:"6 Dec 2024",t:3176,h:"39:00",w:1618,o:891},{date:"13 Dec 2024",t:2920,h:"39:30",w:1636,o:897},{date:"20 Dec 2024",t:3670,h:"39:00",w:1740,o:900},{date:"27 Dec 2024",t:2578,h:"30:15",w:1309,o:755},{date:"3 Jan 2025",t:2331,h:"35:30",w:1517,o:841}]},
+      Jan:{weeks:[{date:"10 Jan 2025",t:2995,h:"46:00",w:1944,o:1143},{date:"17 Jan 2025",t:2433,h:"23:30",w:1566,o:618},{date:"24 Jan 2025",t:2764,h:"37:45",w:1566,o:996},{date:"31 Jan 2025",t:2446,h:"35:45",w:1754,o:863}]},
+      Feb:{weeks:[{date:"7 Feb 2025",t:4046,h:"31:15",w:1942,o:755},{date:"14 Feb 2025",t:3011,h:"48:30",w:2037,o:1259},{date:"21 Feb 2025",t:1811,h:"40:30",w:1670,o:963},{date:"28 Feb 2025",t:2195,h:"27:00",w:1797,o:611}]},
+      Mar:{weeks:[{date:"7 Mar 2025",t:2204,h:"26:30",w:1678,o:632},{date:"14 Mar 2025",t:1930,h:"37:15",w:1566,o:851},{date:"21 Mar 2025",t:2652,h:"38:45",w:1740,o:903},{date:"28 Mar 2025",t:2637,h:"40:15",w:1725,o:892}]},
+      Apr:{weeks:[{date:"4 Apr 2025",t:2418,h:"37:30",w:1594,o:879},{date:"11 Apr 2025",t:2227,h:"40:30",w:1678,o:885},{date:"18 Apr 2025",t:1836,h:"29:30",w:1263,o:719},{date:"25 Apr 2025",t:1711,h:"21:30",w:1208,o:609}]},
+      May:{weeks:[{date:"2 May 2025",t:2322,h:"36:45",w:1325,o:811},{date:"9 May 2025",t:2259,h:"37:30",w:1566,o:855},{date:"16 May 2025",t:2276,h:"37:45",w:1703,o:854},{date:"23 May 2025",t:2092,h:"23:45",w:1575,o:562},{date:"30 May 2025",t:2492,h:"45:45",w:1868,o:1022}]},
+      Jun:{weeks:[{date:"6 Jun 2025",t:2807,h:"32:15",w:1997,o:761},{date:"13 Jun 2025",t:1961,h:"36:45",w:1873,o:863},{date:"20 Jun 2025",t:2454,h:"39:00",w:1709,o:928},{date:"27 Jun 2025",t:2456,h:"38:45",w:1685,o:891}]}
+    },
+    "2025-26":{
+      Jul:{weeks:[{date:"4 Jul 2025",t:2238,h:"37:30",w:1670,o:837},{date:"11 Jul 2025",t:2527,h:"37:30",w:1660,o:861},{date:"18 Jul 2025",t:2804,h:"41:30",w:1721,o:1068},{date:"25 Jul 2025",t:3430,h:"42:45",w:1989,o:1064},{date:"1 Aug 2025",t:2242,h:"38:00",w:1720,o:803}]},
+      Aug:{weeks:[{date:"8 Aug 2025",t:2581,h:"38:30",w:1735,o:582},{date:"15 Aug 2025",t:2246,h:"38:30",w:1740,o:587},{date:"22 Aug 2025",t:2228,h:"38:30",w:1740,o:872},{date:"29 Aug 2025",t:2806,h:"38:30",w:1740,o:920}]},
+      Sep:{weeks:[{date:"5 Sep 2025",t:2381,h:"38:30",w:1740,o:1444},{date:"12 Sep 2025",t:2542,h:"38:45",w:1740,o:659},{date:"19 Sep 2025",t:2557,h:"38:30",w:1740,o:824},{date:"26 Sep 2025",t:2779,h:"38:45",w:1740,o:1012},{date:"3 Oct 2025",t:3079,h:"41:30",w:1886,o:880}]},
+      Oct:{weeks:[{date:"10 Oct 2025",t:3015,h:"27:30",w:2275,o:696},{date:"17 Oct 2025",t:3974,h:"50:00",w:2073,o:1098},{date:"24 Oct 2025",t:3651,h:"49:45",w:2100,o:1056},{date:"31 Oct 2025",t:2813,h:"41:30",w:2218,o:938}]},
+      Nov:{weeks:[{date:"7 Nov 2025",t:2997,h:"40:30",w:1747,o:947},{date:"14 Nov 2025",t:2885,h:"45:15",w:1877,o:1122},{date:"21 Nov 2025",t:2956,h:"37:30",w:1728,o:974},{date:"28 Nov 2025",t:2948,h:"40:30",w:1847,o:999}]},
+      Dec:{weeks:[{date:"5 Dec 2025",t:3943,h:"48:30",w:2193,o:1193},{date:"12 Dec 2025",t:3072,h:"40:30",w:1819,o:975},{date:"19 Dec 2025",t:3576,h:"40:45",w:1875,o:947},{date:"26 Dec 2025",t:2776,h:"30:15",w:1472,o:841},{date:"2 Jan 2026",t:2385,h:"29:30",w:1437,o:891}]},
+      Jan:{weeks:[{date:"9 Jan 2026",t:3524,h:"40:30",w:1969,o:970},{date:"16 Jan 2026",t:2976,h:"38:30",w:1796,o:914},{date:"23 Jan 2026",t:2232,h:"32:30",w:1504,o:761},{date:"30 Jan 2026",t:2580,h:"33:15",w:1561,o:812}]},
+      Feb:{weeks:[{date:"6 Feb 2026",t:3549,h:"40:45",w:1902,o:988},{date:"13 Feb 2026",t:2822,h:"41:00",w:1839,o:1006},{date:"20 Feb 2026",t:2924,h:"40:45",w:1847,o:966},{date:"27 Feb 2026",t:2852,h:"40:30",w:1747,o:1002}]},
+      Mar:{weeks:[{date:"6 Mar 2026",t:2816,h:"40:30",w:1824,o:1004},{date:"13 Mar 2026",t:2811,h:"38:15",w:1720,o:944},{date:"20 Mar 2026",t:3164,h:"39:45",w:1863,o:982},{date:"27 Mar 2026",t:3300,h:"40:45",w:1879,o:1020}]},
+      Apr:{weeks:[{date:"3 Apr 2026",t:2796,h:"32:45",w:1560,o:874},{date:"10 Apr 2026",t:2415,h:"32:15",w:1624,o:858},{date:"17 Apr 2026",t:3026,h:"40:45",w:1857,o:1012},{date:"24 Apr 2026",t:3636,h:"40:45",w:1914,o:1304}]},
+      May:{weeks:[{date:"1 May 2026",t:2606,h:"33:30",w:1663,o:1158},{date:"8 May 2026",t:3094,h:"42:30",w:1837,o:1133},{date:"15 May 2026",t:2396,h:"32:15",w:1369,o:911},{date:"22 May 2026",t:1945,h:"30:00",w:1280,o:931},{date:"29 May 2026",t:2200,h:"33:30",w:1408,o:824}]}
+    }
+  }},
+  {id:"helen",name:"Helen",role:"Barber",c:{bg:"#FAEEDA",fg:"#633806"},years:{
+    "2023-24":{
+      Jun:{weeks:[{date:"Jun 2023",t:2194,h:"30:00",w:1053,o:740}]},
+      Sep:{weeks:[{date:"8 Sep 2023",t:515,h:"8:00",w:243,o:217},{date:"15 Sep 2023",t:616,h:"8:00",w:243,o:216},{date:"22 Sep 2023",t:1491,h:"18:00",w:704,o:559},{date:"29 Sep 2023",t:714,h:"8:00",w:243,o:236},{date:"6 Oct 2023",t:1225,h:"14:30",w:733,o:408}]},
+      Oct:{weeks:[{date:"13 Oct 2023",t:2028,h:"22:00",w:884,o:614},{date:"20 Oct 2023",t:2052,h:"30:00",w:1117,o:829},{date:"27 Oct 2023",t:2459,h:"30:00",w:1123,o:829},{date:"3 Nov 2023",t:1988,h:"26:30",w:1015,o:613}]},
+      Nov:{weeks:[{date:"10 Nov 2023",t:2382,h:"26:00",w:1056,o:609},{date:"17 Nov 2023",t:2126,h:"25:00",w:983,o:567},{date:"24 Nov 2023",t:2074,h:"25:00",w:1000,o:588},{date:"1 Dec 2023",t:2010,h:"24:00",w:971,o:613}]},
+      Dec:{weeks:[{date:"8 Dec 2023",t:2120,h:"25:00",w:972,o:621},{date:"15 Dec 2023",t:2533,h:"30:00",w:1145,o:694},{date:"22 Dec 2023",t:2503,h:"27:00",w:1063,o:689},{date:"29 Dec 2023",t:1347,h:"30:00",w:1151,o:890},{date:"5 Jan 2024",t:1586,h:"29:00",w:1089,o:820}]},
+      Jan:{weeks:[{date:"12 Jan 2024",t:2228,h:"28:30",w:1073,o:723},{date:"19 Jan 2024",t:2591,h:"28:30",w:1101,o:802},{date:"26 Jan 2024",t:2865,h:"36:00",w:1319,o:915},{date:"2 Feb 2024",t:2991,h:"30:00",w:1201,o:829}]},
+      Feb:{weeks:[{date:"9 Feb 2024",t:2151,h:"24:00",w:971,o:572},{date:"16 Feb 2024",t:1724,h:"22:00",w:890,o:620},{date:"23 Feb 2024",t:1913,h:"25:30",w:986,o:648},{date:"1 Mar 2024",t:1789,h:"22:00",w:884,o:560}]},
+      Mar:{weeks:[{date:"8 Mar 2024",t:1972,h:"22:00",w:912,o:642},{date:"15 Mar 2024",t:1908,h:"22:00",w:884,o:598},{date:"22 Mar 2024",t:1783,h:"22:00",w:884,o:539},{date:"29 Mar 2024",t:1977,h:"22:00",w:913,o:553}]},
+      Apr:{weeks:[{date:"5 Apr 2024",t:1448,h:"20:30",w:1244,o:541},{date:"12 Apr 2024",t:2134,h:"22:00",w:912,o:508}]}
+    },
+    "2024-25":{
+      Aug:{weeks:[{date:"16 Aug 2024",t:705,h:"7:30",w:302,o:171},{date:"23 Aug 2024",t:619,h:"7:30",w:302,o:176},{date:"30 Aug 2024",t:685,h:"7:30",w:302,o:171}]},
+      Sep:{weeks:[{date:"6 Sep 2024",t:1115,h:"15:30",w:536,o:355},{date:"13 Sep 2024",t:1067,h:"15:30",w:536,o:353},{date:"20 Sep 2024",t:1111,h:"15:30",w:526,o:354},{date:"27 Sep 2024",t:1097,h:"15:30",w:581,o:341},{date:"4 Oct 2024",t:1052,h:"15:30",w:536,o:339}]},
+      Oct:{weeks:[{date:"11 Oct 2024",t:955,h:"15:30",w:536,o:348},{date:"18 Oct 2024",t:1145,h:"15:30",w:536,o:348},{date:"25 Oct 2024",t:1242,h:"15:30",w:536,o:332},{date:"1 Nov 2024",t:1100,h:"15:30",w:586,o:352}]},
+      Nov:{weeks:[{date:"8 Nov 2024",t:1150,h:"15:30",w:536,o:352},{date:"15 Nov 2024",t:1143,h:"23:30",w:698,o:473},{date:"22 Nov 2024",t:1243,h:"15:30",w:564,o:331},{date:"29 Nov 2024",t:1100,h:"15:30",w:536,o:377}]},
+      Dec:{weeks:[{date:"6 Dec 2024",t:1063,h:"15:30",w:536,o:354},{date:"13 Dec 2024",t:1222,h:"15:30",w:536,o:352},{date:"20 Dec 2024",t:1331,h:"15:30",w:583,o:358},{date:"27 Dec 2024",t:1312,h:"15:00",w:567,o:374},{date:"3 Jan 2025",t:1085,h:"12:00",w:374,o:284}]},
+      Jan:{weeks:[{date:"10 Jan 2025",t:1551,h:"22:30",w:897,o:559},{date:"17 Jan 2025",t:1270,h:"15:30",w:555,o:407},{date:"24 Jan 2025",t:1101,h:"15:30",w:547,o:409},{date:"31 Jan 2025",t:1293,h:"15:15",w:547,o:368}]},
+      Feb:{weeks:[{date:"7 Feb 2025",t:2206,h:"23:30",w:830,o:568},{date:"14 Feb 2025",t:3005,h:"37:30",w:1209,o:974},{date:"21 Feb 2025",t:1152,h:"15:30",w:583,o:369},{date:"28 Feb 2025",t:1686,h:"23:30",w:775,o:532}]},
+      Mar:{weeks:[{date:"7 Mar 2025",t:1258,h:"16:00",w:603,o:381},{date:"14 Mar 2025",t:1140,h:"15:30",w:555,o:354},{date:"21 Mar 2025",t:1098,h:"15:30",w:555,o:361},{date:"28 Mar 2025",t:1034,h:"15:30",w:555,o:343}]},
+      Apr:{weeks:[{date:"4 Apr 2025",t:946,h:"15:30",w:555,o:363},{date:"11 Apr 2025",t:1307,h:"23:15",w:565,o:508},{date:"18 Apr 2025",t:1120,h:"15:30",w:555,o:378},{date:"25 Apr 2025",t:1330,h:"15:30",w:848,o:439}]},
+      May:{weeks:[{date:"2 May 2025",t:1405,h:"15:30",w:555,o:342},{date:"9 May 2025",t:978,h:"16:00",w:573,o:365},{date:"16 May 2025",t:1032,h:"16:00",w:573,o:362},{date:"23 May 2025",t:1258,h:"16:00",w:573,o:379},{date:"30 May 2025",t:1088,h:"16:00",w:573,o:357}]},
+      Jun:{weeks:[{date:"6 Jun 2025",t:1151,h:"16:00",w:630,o:378},{date:"13 Jun 2025",t:1022,h:"16:00",w:630,o:376},{date:"20 Jun 2025",t:968,h:"16:00",w:573,o:381},{date:"27 Jun 2025",t:1244,h:"16:00",w:630,o:368}]}
+    },
+    "2025-26":{
+      Jul:{weeks:[{date:"4 Jul 2025",t:1036,h:"16:00",w:633,o:357},{date:"11 Jul 2025",t:944,h:"16:00",w:633,o:367},{date:"18 Jul 2025",t:1771,h:"15:45",w:869,o:405},{date:"25 Jul 2025",t:1318,h:"15:45",w:669,o:392},{date:"1 Aug 2025",t:1087,h:"15:30",w:633,o:328}]},
+      Aug:{weeks:[{date:"8 Aug 2025",t:1184,h:"15:30",w:631,o:372},{date:"15 Aug 2025",t:1214,h:"15:45",w:641,o:377},{date:"22 Aug 2025",t:409,h:"8:00",w:289,o:181},{date:"29 Aug 2025",t:1066,h:"15:30",w:630,o:370}]},
+      Sep:{weeks:[{date:"5 Sep 2025",t:1167,h:"15:30",w:630,o:581},{date:"12 Sep 2025",t:1005,h:"15:30",w:630,o:417},{date:"19 Sep 2025",t:959,h:"15:30",w:630,o:332},{date:"26 Sep 2025",t:1168,h:"15:30",w:630,o:405},{date:"3 Oct 2025",t:1903,h:"22:00",w:1084,o:466}]},
+      Oct:{weeks:[{date:"10 Oct 2025",t:1128,h:"15:30",w:630,o:392},{date:"17 Oct 2025",t:2108,h:"22:15",w:1064,o:488},{date:"24 Oct 2025",t:1944,h:"22:15",w:1097,o:472},{date:"31 Oct 2025",t:1605,h:"22:00",w:1228,o:497}]},
+      Nov:{weeks:[{date:"7 Nov 2025",t:1703,h:"23:30",w:892,o:549},{date:"14 Nov 2025",t:1993,h:"22:45",w:1196,o:564},{date:"21 Nov 2025",t:1764,h:"23:30",w:927,o:610},{date:"28 Nov 2025",t:1104,h:"15:30",w:630,o:382}]},
+      Dec:{weeks:[{date:"5 Dec 2025",t:1456,h:"15:30",w:633,o:381},{date:"12 Dec 2025",t:1303,h:"16:00",w:648,o:385},{date:"19 Dec 2025",t:1480,h:"15:30",w:663,o:360},{date:"26 Dec 2025",t:645,h:"15:30",w:676,o:431},{date:"2 Jan 2026",t:1004,h:"13:00",w:519,o:393}]},
+      Jan:{weeks:[{date:"9 Jan 2026",t:680,h:"8:00",w:290,o:192},{date:"16 Jan 2026",t:1055,h:"15:30",w:630,o:368},{date:"23 Jan 2026",t:1156,h:"14:00",w:594,o:328},{date:"30 Jan 2026",t:1471,h:"15:45",w:688,o:385}]},
+      Feb:{weeks:[{date:"6 Feb 2026",t:1452,h:"15:30",w:660,o:376},{date:"13 Feb 2026",t:1566,h:"22:15",w:859,o:546},{date:"20 Feb 2026",t:1352,h:"15:30",w:658,o:368},{date:"27 Feb 2026",t:1125,h:"15:30",w:630,o:384}]},
+      Mar:{weeks:[{date:"6 Mar 2026",t:940,h:"15:30",w:630,o:384},{date:"13 Mar 2026",t:1109,h:"15:30",w:630,o:383},{date:"20 Mar 2026",t:1268,h:"15:30",w:663,o:383},{date:"27 Mar 2026",t:2019,h:"22:00",w:1088,o:551}]},
+      Apr:{weeks:[{date:"3 Apr 2026",t:1402,h:"15:45",w:646,o:421},{date:"10 Apr 2026",t:1293,h:"14:45",w:858,o:392},{date:"17 Apr 2026",t:1035,h:"15:15",w:625,o:379},{date:"24 Apr 2026",t:1476,h:"15:30",w:658,o:496}]},
+      May:{weeks:[{date:"1 May 2026",t:465,h:"15:30",w:498,o:536},{date:"8 May 2026",t:1250,h:"15:45",w:644,o:420},{date:"15 May 2026",t:2204,h:"24:00",w:972,o:678},{date:"22 May 2026",t:1662,h:"23:30",w:916,o:729},{date:"29 May 2026",t:1895,h:"24:00",w:855,o:590}]}
+    }
+  }},
+  {id:"majid",name:"Majid",role:"Barber",c:{bg:"#EEEDFE",fg:"#3C3489"},years:{
+    "2025-26":{
+      Apr:{weeks:[{date:"10 Apr 2026",t:2640,h:"39:45",w:1861,o:632},{date:"17 Apr 2026",t:3406,h:"48:45",w:2297,o:1210},{date:"24 Apr 2026",t:3776,h:"49:45",w:2423,o:1080}]},
+      May:{weeks:[{date:"1 May 2026",t:3272,h:"43:45",w:2317,o:1512},{date:"8 May 2026",t:3470,h:"53:00",w:2567,o:987},{date:"15 May 2026",t:3657,h:"50:00",w:2355,o:1412},{date:"22 May 2026",t:3488,h:"33:30",w:2378,o:1040},{date:"29 May 2026",t:3090,h:"50:00",w:2360,o:1230}]}
+    }
+  }},
+  {id:"jeni",name:"Jeni",role:"Barber",c:{bg:"#FCEBEB",fg:"#791F1F"},years:{
+    "2025-26":{
+      Dec:{weeks:[{date:"12 Dec 2025",t:1270,h:"24:00",w:1001,o:578},{date:"19 Dec 2025",t:1970,h:"24:00",w:1001,o:558},{date:"26 Dec 2025",t:1153,h:"15:30",w:699,o:578},{date:"2 Jan 2026",t:860,h:"13:00",w:590,o:393}]},
+      Jan:{weeks:[{date:"9 Jan 2026",t:2071,h:"30:00",w:1181,o:718},{date:"16 Jan 2026",t:1646,h:"30:00",w:1155,o:712},{date:"23 Jan 2026",t:1928,h:"39:15",w:1448,o:920},{date:"30 Jan 2026",t:2225,h:"32:00",w:1236,o:782}]},
+      Feb:{weeks:[{date:"6 Feb 2026",t:1389,h:"24:45",w:942,o:600},{date:"13 Feb 2026",t:2023,h:"40:00",w:1476,o:982},{date:"20 Feb 2026",t:1489,h:"26:30",w:1076,o:628},{date:"27 Feb 2026",t:1323,h:"24:30",w:947,o:606}]},
+      Mar:{weeks:[{date:"6 Mar 2026",t:1224,h:"23:30",w:981,o:583},{date:"13 Mar 2026",t:1007,h:"23:30",w:1001,o:580},{date:"20 Mar 2026",t:1300,h:"23:45",w:993,o:587},{date:"27 Mar 2026",t:1575,h:"23:30",w:1118,o:588}]},
+      Apr:{weeks:[{date:"3 Apr 2026",t:1736,h:"29:30",w:1176,o:788},{date:"10 Apr 2026",t:1318,h:"23:30",w:1198,o:625},{date:"17 Apr 2026",t:1187,h:"23:30",w:983,o:583},{date:"24 Apr 2026",t:1657,h:"23:30",w:981,o:752}]},
+      May:{weeks:[{date:"1 May 2026",t:925,h:"14:45",w:591,o:510},{date:"8 May 2026",t:1395,h:"23:30",w:991,o:627},{date:"15 May 2026",t:1498,h:"23:30",w:981,o:664},{date:"22 May 2026",t:1302,h:"23:15",w:981,o:722},{date:"29 May 2026",t:1473,h:"23:30",w:988,o:578}]}
+    }
+  }},
+  {id:"radi",name:"Radi",role:"Barber",c:{bg:"#F1EFE8",fg:"#444441"},years:{
+    "2025-26":{
+      May:{weeks:[{date:"8 May 2026",t:1130,h:"24:30",w:996,o:653},{date:"15 May 2026",t:2313,h:"37:30",w:1672,o:1059},{date:"22 May 2026",t:1916,h:"37:30",w:1562,o:1055},{date:"29 May 2026",t:1687,h:"37:00",w:1672,o:910}]}
+    }
+  }},
+  {id:"hamilton",name:"Hamilton",role:"Barber",c:{bg:"#FBEAF0",fg:"#72243E"},years:{
+    "2025-26":{
+      May:{weeks:[{date:"22 May 2026",t:865,h:"14:00",w:700,o:434},{date:"29 May 2026",t:785,h:"13:30",w:700,o:332}]}
+    }
+  }}
+];
+
+const MO=['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+const TARGET_ID='jeni';
+let curYear='2025-26';
+let chart=null;
+
+function $f(n){if(n==null||isNaN(n))return'-';return(n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString();}
+function $p(n){if(n==null||isNaN(n))return'-';return Math.round(n)+'%';}
+function ini(name){return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function cw(w){const tc=w.w+w.o,wp=w.t>0?(w.w/w.t)*100:999,cp=w.t>0?(tc/w.t)*100:999,pr=w.t-tc;return{...w,tc,wp,cp,pr};}
+function allW(s,y){let a=[];MO.forEach(m=>{if(s.years[y]&&s.years[y][m])a=a.concat(s.years[y][m].weeks);});return a.map(cw);}
+function yrs(s){return Object.keys(s.years).sort();}
+
+const s=STAFF.find(x=>x.id===TARGET_ID);
+
+function render(){
+  const weeks=allW(s,curYear);
+  if(!weeks.length){document.getElementById('metrics').innerHTML='<div style="color:#aaa;grid-column:1/-1;">No data for this period.</div>';return;}
+  
+  const n=weeks.length;
+  const totTO=weeks.reduce((a,w)=>a+w.t,0);
+  const totPr=weeks.reduce((a,w)=>a+w.pr,0);
+  const avgTO=totTO/n,avgW=weeks.reduce((a,w)=>a+w.w,0)/n,avgPr=totPr/n;
+  const awp=weeks.reduce((a,w)=>a+w.wp,0)/n;
+  const bk=Math.ceil(weeks.reduce((a,w)=>a+w.tc,0)/n);
+  const best=weeks.reduce((a,w)=>w.t>a.t?w:a,weeks[0]);
+  const hit=weeks.filter(w=>w.t>=bk).length;
+  const hitp=Math.round((hit/n)*100);
+
+  // Metrics
+  document.getElementById('metrics').innerHTML=`
+    <div class="met"><div class="ml">Avg turnover/week</div><div class="mv">${$f(Math.round(avgTO))}</div><div class="ms">${n} weeks</div></div>
+    <div class="met"><div class="ml">Best week</div><div class="mv" style="color:#3b6d11;">${$f(best.t)}</div><div class="ms">${best.date}</div></div>
+    <div class="met" style="background:${totPr>=0?'#eaf3de':'#fcebeb'};"><div class="ml" style="color:${totPr>=0?'#3b6d11':'#a32d2d'};">Total profit/loss</div><div class="mv" style="color:${totPr>=0?'#3b6d11':'#a32d2d'};">${$f(totPr)}</div></div>`;
+
+  // Breakeven
+  document.getElementById('breakeven').innerHTML=`<strong>Weekly target:</strong> You need <strong>${$f(bk)}/week</strong> in turnover to cover all costs. Your average is <strong>${$f(Math.round(avgTO))}/week</strong>.`;
+  document.getElementById('breakeven').className='ins '+( avgTO>=bk?'ins-g':avgTO>=bk*0.85?'ins-a':'ins-r');
+
+  // Monthly bars
+  const ydata=s.years[curYear]||{};
+  let mbars='';
+  MO.filter(m=>ydata[m]).forEach(m=>{
+    const mw=(ydata[m].weeks||[]).map(cw);
+    if(!mw.length)return;
+    const avg=mw.reduce((a,w)=>a+w.t,0)/mw.length;
+    const bp=Math.min((avg/bk)*100,100);
+    const col=avg>=bk?'#639922':avg>=bk*0.85?'#EF9F27':'#E24B4A';
+    const bg=avg>=bk?'#eaf3de':avg>=bk*0.85?'#faeeda':'#fcebeb';
+    const fg=avg>=bk?'#3b6d11':avg>=bk*0.85?'#854f0b':'#a32d2d';
+    mbars+=`<div class="mbar">
+      <div class="mbar-row">
+        <span class="mbar-label">${m}</span>
+        <span class="mbar-val">${$f(Math.round(avg))}<span style="font-size:11px;font-weight:400;color:#aaa;">/wk avg (${mw.length} weeks)</span></span>
+        <span class="mbar-badge" style="background:${bg};color:${fg};">${avg>=bk?'Target met':avg>=bk*0.85?'Close':'Below target'}</span>
+      </div>
+      <div class="mbar-track">
+        <div class="mbar-fill" style="width:${bp}%;background:${col};"></div>
+        <div class="mbar-line" style="left:min(99%,99%);"></div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('month-bars').innerHTML=mbars||'<div style="color:#aaa;">No monthly data available.</div>';
+
+  // Weekly list
+  let wlist='';
+  weeks.forEach(w=>{
+    const hit=w.t>=bk,close=w.t>=bk*0.85;
+    const col=hit?'#639922':close?'#EF9F27':'#E24B4A';
+    const bg=hit?'#eaf3de':close?'#faeeda':'#fcebeb';
+    const fg=hit?'#3b6d11':close?'#854f0b':'#a32d2d';
+    wlist+=`<div class="wk-row">
+      <span style="color:#888;font-size:12px;width:110px;flex-shrink:0;">${w.date}</span>
+      <span style="font-weight:600;">${$f(w.t)}</span>
+      <span class="badge" style="background:${bg};color:${fg};">${hit?'Target met':close?'Close':'Below'}</span>
+    </div>`;
+  });
+  document.getElementById('weekly-list').innerHTML=wlist;
+
+  // Summary
+  document.getElementById('summary').innerHTML=`<strong>Summary:</strong> You hit target in <strong>${hit} of ${n} weeks</strong> (${hitp}%). ${hitp>=70?'Excellent consistency — keep it up!':hitp>=40?`Getting there — aim for ${$f(bk)} or more every week.`:`Your best week was ${$f(best.t)} which shows what you can do. Let\'s aim for that consistently.`}`;
+  document.getElementById('summary').className='ins '+(hitp>=70?'ins-g':hitp>=40?'ins-a':'ins-r');
+
+  // Chart
+  if(chart)chart.destroy();
+  const labs=weeks.map(w=>w.date.replace(/\s\d{4}/,'').replace(/^\d+-/,''));
+  const ctx=document.getElementById('trend-chart');
+  if(ctx)chart=new Chart(ctx,{type:'line',data:{labels:labs,datasets:[{label:'Turnover',data:weeks.map(w=>w.t),borderColor:'#378ADD',backgroundColor:'rgba(55,138,221,0.07)',tension:0.3,pointBackgroundColor:weeks.map(w=>w.t>=bk?'#639922':'#E24B4A'),pointRadius:4,fill:true},{label:'Target',data:weeks.map(()=>bk),borderColor:'#854F0B',borderDash:[5,4],pointRadius:0,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},autoSkip:true,maxTicksLimit:12},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,0.04)'},min:0}}}});
+}
+
+function setYear(y){
+  curYear=y;
+  document.querySelectorAll('.ytb').forEach(t=>t.classList.toggle('on',t.textContent===y));
+  render();
+}
+
+// Init
+document.getElementById('avt').style.background=s.c.bg;
+document.getElementById('avt').style.color=s.c.fg;
+document.getElementById('avt').textContent=ini(s.name);
+document.getElementById('sname').textContent=s.name;
+document.getElementById('srole').textContent=s.role+' · Castle Hill Barbershop';
+document.getElementById('upd').textContent='Updated: '+new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+
+const sy=Object.keys(s.years).sort();
+curYear=sy[sy.length-1];
+document.getElementById('yr-tabs').innerHTML=sy.map(y=>`<div class="ytb${y===curYear?' on':''}" onclick="setYear('${y}')">${y}</div>`).join('');
+
+render();
+</script>
+</body>
+</html>
