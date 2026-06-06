@@ -169,7 +169,7 @@ function killCharts(){Object.values(charts).forEach(c=>{try{c.destroy();}catch(e
 function parseDate(d) {
   if(!d) return null;
   const s = d.toString().trim();
-  // Try DD-Mon-YYYY or D-Mon-YYYY
+  // Try DD-Mon-YYYY or D-Mon-YYYY (e.g. 22-May-2026)
   const m1 = s.match(/(\d{1,2})[-\/]([A-Za-z]+)[-\/](\d{4})/);
   if(m1) {
     const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
@@ -179,10 +179,49 @@ function parseDate(d) {
   // Try YYYY-MM-DD
   const m2 = s.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
   if(m2) return new Date(parseInt(m2[1]), parseInt(m2[2])-1, parseInt(m2[3]));
-  // Try JS date parse
-  const dt = new Date(s);
-  if(!isNaN(dt)) return dt;
+  // Google Sheets date serial or ISO - use UTC to avoid timezone shift
+  if(s.includes('T')) {
+    const parts = s.split('T')[0].split('-');
+    if(parts.length===3) return new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+  }
   return null;
+}
+
+function fmtDate(dt) {
+  if(!dt) return '';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return dt.getDate()+' '+months[dt.getMonth()]+' '+dt.getFullYear();
+}
+
+function fmtDateShort(dt) {
+  if(!dt) return '';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return dt.getDate()+' '+months[dt.getMonth()];
+}
+
+function fmtHours(h) {
+  if(!h) return '-';
+  const s = h.toString().trim();
+  // Already in HH:MM format
+  if(s.match(/^\d+:\d+$/)) return s;
+  // Google Sheets time serial (fraction of day) or ISO time
+  if(s.includes('T')) {
+    const time = s.split('T')[1];
+    if(time) {
+      const parts = time.split(':');
+      return parts[0]+':'+parts[1];
+    }
+  }
+  // Decimal hours
+  const n = parseFloat(s);
+  if(!isNaN(n) && n < 2) {
+    // Fraction of day
+    const totalMins = Math.round(n * 24 * 60);
+    const hrs = Math.floor(totalMins/60);
+    const mins = totalMins % 60;
+    return hrs+':'+(mins<10?'0':'')+mins;
+  }
+  return s;
 }
 
 function getFinYear(dt) {
@@ -203,7 +242,9 @@ function calcRow(r) {
   const wp = r.turnover > 0 ? (r.wage/r.turnover)*100 : 999;
   const cp = r.turnover > 0 ? (tc/r.turnover)*100 : 999;
   const pr = r.turnover - tc;
-  return {...r, tc, wp, cp, pr};
+  const displayDate = r.dt ? fmtDate(r.dt) : r.date.toString();
+  const displayHours = fmtHours(r.hours);
+  return {...r, tc, wp, cp, pr, displayDate, displayHours};
 }
 
 function getStaffData(name, year) {
@@ -443,10 +484,12 @@ function buildReport(){
     const bg=d.avg>=bk?'#eaf3de':d.avg>=bk*0.85?'#faeeda':'#fcebeb';
     const fg=d.avg>=bk?'#3b6d11':d.avg>=bk*0.85?'#854f0b':'#a32d2d';
     const prCol=d.avgPr>=0?'#3b6d11':'#a32d2d';
+    const pctOfTarget=Math.round((d.avg/bk)*100);
     return`<div class="mbar">
       <div class="mbar-row">
         <span class="mbar-label">${d.m}</span>
         <span class="mbar-val">${$f(d.avg)}<span style="font-size:11px;font-weight:400;color:#aaa;">/wk · wage ${$f(d.avgW)} · profit <span style="color:${prCol};">${$f(d.avgPr)}</span></span></span>
+        <span style="font-size:11px;font-weight:600;color:${fg};min-width:36px;text-align:right;">${pctOfTarget}%</span>
         <span class="mbar-badge" style="background:${bg};color:${fg};">${d.avg>=bk?'Target met':d.avg>=bk*0.85?'Close':'Below target'}</span>
       </div>
       <div class="mbar-track"><div class="mbar-fill" style="width:${bp}%;background:${col};"></div><div class="mbar-line" style="left:min(99%,99%);"></div></div>
@@ -476,7 +519,7 @@ function buildReport(){
       <div style="overflow-x:auto;"><table>
         <thead><tr><th style="text-align:left;min-width:100px;">Week</th><th>Turnover</th><th>Hrs</th><th>Wage</th><th>Op.exp</th><th>Total cost</th><th>Wage%</th><th>Cost%</th><th>Profit/loss</th></tr></thead>
         <tbody>
-          ${weeks.map(w=>`<tr><td>${w.date}</td><td>${$f(w.turnover)}</td><td>${w.hours}</td><td>${$f(w.wage)}</td><td>${$f(w.opexp)}</td><td>${$f(w.tc)}</td><td class="${pc(w.wp)}">${$p(w.wp)}</td><td class="${pc(w.cp)}">${$p(w.cp)}</td><td class="${prof(w.pr)}">${$f(w.pr)}</td></tr>`).join('')}
+          ${weeks.map(w=>`<tr><td>${w.displayDate}</td><td>${$f(w.turnover)}</td><td>${w.displayHours}</td><td>${$f(w.wage)}</td><td>${$f(w.opexp)}</td><td>${$f(w.tc)}</td><td class="${pc(w.wp)}">${$p(w.wp)}</td><td class="${pc(w.cp)}">${$p(w.cp)}</td><td class="${prof(w.pr)}">${$f(w.pr)}</td></tr>`).join('')}
           <tr class="tr"><td>Total</td><td>${$f(totTO)}</td><td>-</td><td>${$f(totW)}</td><td>${$f(totO)}</td><td>${$f(totC)}</td><td class="${pc(awp)}">${$p(awp)}</td><td class="${pc(acp)}">${$p(acp)}</td><td class="${prof(totPr)}">${$f(totPr)}</td></tr>
           <tr class="ar"><td>Average/week</td><td>${$f(avgTO)}</td><td>-</td><td>${$f(avgW)}</td><td>${$f(avgO)}</td><td>${$f(avgC)}</td><td class="${pc(awp)}">${$p(awp)}</td><td class="${pc(acp)}">${$p(acp)}</td><td class="${prof(avgPr)}">${$f(avgPr)}</td></tr>
         </tbody>
@@ -501,7 +544,7 @@ function buildReport(){
     const bp=Math.min((w.turnover/maxB)*100,100),tp=Math.min((bk/maxB)*100,100);
     const hit2=w.turnover>=bk,close=w.turnover>=bk*0.85;
     const col=hit2?'#639922':close?'#EF9F27':'#E24B4A',bg=hit2?'#eaf3de':close?'#faeeda':'#fcebeb',fg=hit2?'#3b6d11':close?'#854f0b':'#a32d2d';
-    return`<div class="mbar"><div class="mbar-row"><span style="font-size:12px;color:#888;width:110px;flex-shrink:0;">${w.date}</span><span class="mbar-val">${$f(w.turnover)}</span><span class="mbar-badge" style="background:${bg};color:${fg};">${hit2?'Target met':close?'Close':'Below'}</span></div><div class="mbar-track"><div class="mbar-fill" style="width:${bp}%;background:${col};"></div><div class="mbar-line" style="left:${tp}%;"></div></div></div>`;
+    return`<div class="mbar"><div class="mbar-row"><span style="font-size:12px;color:#888;width:110px;flex-shrink:0;">${w.displayDate}</span><span class="mbar-val">${$f(w.turnover)}</span><span class="mbar-badge" style="background:${bg};color:${fg};">${hit2?'Target met':close?'Close':'Below'}</span></div><div class="mbar-track"><div class="mbar-fill" style="width:${bp}%;background:${col};"></div><div class="mbar-line" style="left:${tp}%;"></div></div></div>`;
   }).join('');
 
   const c=getColor(curStaff);
@@ -543,7 +586,7 @@ function switchView(v){
 function renderCharts(v){
   if(!window._rd)return;
   const{weeks,bk}=window._rd;
-  const labs=weeks.map(w=>w.date.toString().replace(/\s\d{4}/,'').replace(/^\d+-/,''));
+  const labs=weeks.map(w=>w.dt?fmtDateShort(w.dt):w.date.toString());
   if(v==='int'){
     const c1=document.getElementById('rc1'),c2=document.getElementById('rc2');
     if(c1)charts.rc1=new Chart(c1,{type:'bar',data:{labels:labs,datasets:[{label:'Turnover',data:weeks.map(w=>w.turnover),backgroundColor:'#378ADD',borderRadius:2},{label:'Cost',data:weeks.map(w=>w.tc),backgroundColor:'#E24B4A',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},autoSkip:true,maxTicksLimit:10},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,0.04)'}}}}});
