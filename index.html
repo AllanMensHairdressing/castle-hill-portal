@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castle Hill — Staff Performance</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px;}
@@ -129,6 +130,9 @@ td:first-child{text-align:left;color:#666;}
 
 </div>
 <script>
+// Register datalabels plugin only for specific charts
+Chart.register(ChartDataLabels);
+
 // ============================================================
 // LIVE DATA FROM GOOGLE SHEETS
 // ============================================================
@@ -386,12 +390,12 @@ function buildDash(){
         });
         return{label:s,data:MO.map(m=>byMonth[m]||null),backgroundColor:c.fg+'cc',borderRadius:2};
       });
-      charts.d1=new Chart(c1,{type:'bar',data:{labels:MO,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:10},boxWidth:8}}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,0.04)'}}}}});
+      charts.d1=new Chart(c1,{type:'bar',data:{labels:MO,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{font:{size:10},boxWidth:8}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10}},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,0.04)'}}}}});
     }
     const c2=document.getElementById('dc2');
     if(c2&&swd.length){
       const avgs=swd.map(s=>{const w=getStaffData(s,curYear);return w.length?Math.round(w.reduce((a,r)=>a+r.wp,0)/w.length):0;});
-      charts.d2=new Chart(c2,{type:'bar',data:{labels:swd.map(s=>s),datasets:[{data:avgs,backgroundColor:avgs.map(v=>v>60?'#E24B4A':v>45?'#EF9F27':'#639922'),borderRadius:4},{label:'Target',data:swd.map(()=>45),type:'line',borderColor:'#854F0B',borderDash:[4,4],pointRadius:0,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:11}},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},min:0,max:120}}}});
+      charts.d2=new Chart(c2,{type:'bar',data:{labels:swd.map(s=>s),datasets:[{data:avgs,backgroundColor:avgs.map(v=>v>60?'#E24B4A':v>45?'#EF9F27':'#639922'),borderRadius:4,datalabels:{display:true}},{label:'Target',data:swd.map(()=>45),type:'line',borderColor:'#854F0B',borderDash:[4,4],pointRadius:0,borderWidth:1.5,datalabels:{display:false}}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{color:'#fff',font:{size:11,weight:'bold'},formatter:v=>v+'%',anchor:'center',align:'center'}},scales:{x:{ticks:{font:{size:11}},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},min:0,max:120}}}});
     }
   },100);
 }
@@ -589,7 +593,7 @@ function renderCharts(v){
   const labs=weeks.map(w=>w.dt?fmtDateShort(w.dt):w.date.toString());
   if(v==='int'){
     const c1=document.getElementById('rc1'),c2=document.getElementById('rc2');
-    if(c1)charts.rc1=new Chart(c1,{type:'bar',data:{labels:labs,datasets:[{label:'Turnover',data:weeks.map(w=>w.turnover),backgroundColor:'#378ADD',borderRadius:2},{label:'Cost',data:weeks.map(w=>w.tc),backgroundColor:'#E24B4A',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},autoSkip:true,maxTicksLimit:10},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,0.04)'}}}}});
+    if(c1)charts.rc1=new Chart(c1,{type:'bar',data:{labels:labs,datasets:[{label:'Turnover',data:weeks.map(w=>w.turnover),backgroundColor:'#378ADD',borderRadius:2},{label:'Cost',data:weeks.map(w=>w.tc),backgroundColor:'#E24B4A',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},autoSkip:true,maxTicksLimit:10},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>'$'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,0.04)'}}}}});;
     if(c2)charts.rc2=new Chart(c2,{type:'line',data:{labels:labs,datasets:[{data:weeks.map(w=>Math.round(w.cp)),borderColor:'#E24B4A',backgroundColor:'rgba(226,75,74,0.07)',tension:0.3,pointRadius:2,fill:true},{data:weeks.map(()=>100),borderColor:'#639922',borderDash:[4,4],pointRadius:0,borderWidth:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},autoSkip:true,maxTicksLimit:10},grid:{display:false}},y:{ticks:{font:{size:10},callback:v=>v+'%'},grid:{color:'rgba(0,0,0,0.04)'},min:0}}}});
   }
   if(v==='stf'){
