@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- saved from url=(0045)file:///C:/Users/Admin/Downloads/index_2.html -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castle Hill — Staff Performance Portal</title>
-<script src="./index_files/chart.umd.js.download"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px;}
@@ -132,11 +132,11 @@ tr:last-child td{border-bottom:none;}
 <div class="topbar no-print">
   <div class="topbar-brand">Castle Hill <span>Barbershop</span></div>
   <div class="nav-tabs">
-    <div class="nav-tab active" onclick="showPage(&#39;dashboard&#39;)" id="nt-dashboard">Dashboard</div>
-    <div class="nav-tab" onclick="showPage(&#39;staff&#39;)" id="nt-staff">Staff</div>
+    <div class="nav-tab active" onclick="showPage('dashboard')" id="nt-dashboard">Dashboard</div>
+    <div class="nav-tab" onclick="showPage('staff')" id="nt-staff">Staff</div>
   </div>
   <div class="topbar-right">
-    <span style="font-size:12px;color:#aaa;" id="last-updated">Updated: 6 June 2026</span>
+    <span style="font-size:12px;color:#aaa;" id="last-updated"></span>
   </div>
 </div>
 
@@ -149,177 +149,22 @@ tr:last-child td{border-bottom:none;}
       <div style="font-size:20px;font-weight:600;">Staff performance</div>
       <div style="font-size:13px;color:#888;margin-top:2px;">Castle Hill · Current financial year</div>
     </div>
-    <div class="ytabs" id="dash-ytabs"><div class="ytab " onclick="setDashYear(&#39;2023-24&#39;)">2023-24</div><div class="ytab " onclick="setDashYear(&#39;2024-25&#39;)">2024-25</div><div class="ytab active" onclick="setDashYear(&#39;2025-26&#39;)">2025-26</div></div>
+    <div class="ytabs" id="dash-ytabs"></div>
   </div>
-  <div class="g4" id="dash-metrics" style="margin-bottom:1.25rem;">
-    <div class="metric"><div class="metric-label">Staff with data</div><div class="metric-val">7</div><div class="metric-sub">of 7 total</div></div>
-    <div class="metric"><div class="metric-label">Total turnover</div><div class="metric-val">$351,581</div><div class="metric-sub">2025-26</div></div>
-    <div class="metric" style="background:#eaf3de;"><div class="metric-label" style="color:#3b6d11;">Total net profit/loss</div><div class="metric-val" style="color:#3b6d11;">$14,442</div><div class="metric-sub" style="color:#639922;">2025-26</div></div>
-    <div class="metric"><div class="metric-label">Avg wage %</div><div class="metric-val" style="color:#a32d2d;">62%</div><div class="metric-sub">target: 45%</div></div></div>
+  <div class="g4" id="dash-metrics" style="margin-bottom:1.25rem;"></div>
   <div class="g2" style="margin-bottom:1.25rem;">
     <div class="card">
       <div class="slabel">Monthly turnover by staff</div>
-      <div style="position:relative;height:220px;"><canvas id="dash-chart1" role="img" aria-label="Monthly turnover by staff member" width="477" height="220" style="display: block; box-sizing: border-box; height: 220px; width: 477px;">Monthly turnover comparison across staff.</canvas></div>
+      <div style="position:relative;height:220px;"><canvas id="dash-chart1" role="img" aria-label="Monthly turnover by staff member">Monthly turnover comparison across staff.</canvas></div>
     </div>
     <div class="card">
       <div class="slabel">Average wage % vs target (45%)</div>
-      <div style="position:relative;height:220px;"><canvas id="dash-chart2" role="img" aria-label="Average wage percentage vs 45% target" width="477" height="220" style="display: block; box-sizing: border-box; height: 220px; width: 477px;">Wage percentage vs target for each staff member.</canvas></div>
+      <div style="position:relative;height:220px;"><canvas id="dash-chart2" role="img" aria-label="Average wage percentage vs 45% target">Wage percentage vs target for each staff member.</canvas></div>
     </div>
   </div>
   <div class="card">
     <div class="slabel" style="margin-bottom:14px;">Staff overview — click to view full report</div>
-    <div id="dash-staff-list"><table>
-    <thead><tr>
-      <th style="text-align:left;width:140px;">Staff</th>
-      <th>Weeks</th><th>Total turnover</th><th>Avg/week</th>
-      <th>Avg wage %</th><th>Avg cost %</th><th>Total profit/loss</th>
-    </tr></thead>
-    <tbody>
-    <tr style="cursor:pointer;" onclick="openReport(&#39;ronald&#39;)">
-        <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="background:#E6F1FB;color:#0C447C;width:28px;height:28px;font-size:11px;">R</div>Ronald</div></td>
-        <td>44</td>
-        <td>$78,704</td>
-        <td>$1,789</td>
-        <td class="pct-g">57%</td>
-        <td class="pct-m">93%</td>
-        <td class="pos">$8,847</td>
-      </tr><tr style="cursor:pointer;" onclick="openReport(&#39;mona&#39;)">
-        <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="background:#E1F5EE;color:#085041;width:28px;height:28px;font-size:11px;">M</div>Mona</div></td>
-        <td>48</td>
-        <td>$137,095</td>
-        <td>$2,856</td>
-        <td class="pct-m">63%</td>
-        <td class="pct-m">97%</td>
-        <td class="pos">$6,446</td>
-      </tr><tr style="cursor:pointer;" onclick="openReport(&#39;helen&#39;)">
-        <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="background:#FAEEDA;color:#633806;width:28px;height:28px;font-size:11px;">H</div>Helen</div></td>
-        <td>48</td>
-        <td>$63,343</td>
-        <td>$1,320</td>
-        <td class="pct-g">57%</td>
-        <td class="pct-m">92%</td>
-        <td class="pos">$8,073</td>
-      </tr><tr style="cursor:pointer;" onclick="openReport(&#39;majid&#39;)">
-        <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="background:#EEEDFE;color:#3C3489;width:28px;height:28px;font-size:11px;">M</div>Majid</div></td>
-        <td>8</td>
-        <td>$26,799</td>
-        <td>$3,350</td>
-        <td class="pct-m">69%</td>
-        <td class="pct-h">103%</td>
-        <td class="neg">-$862</td>
-      </tr><tr style="cursor:pointer;" onclick="openReport(&#39;jeni&#39;)">
-        <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="background:#FCEBEB;color:#791F1F;width:28px;height:28px;font-size:11px;">J</div>Jeni</div></td>
-        <td>25</td>
-        <td>$36,944</td>
-        <td>$1,478</td>
-        <td class="pct-m">71%</td>
-        <td class="pct-h">116%</td>
-        <td class="neg">-$5,013</td>
-      </tr><tr style="cursor:pointer;" onclick="openReport(&#39;radi&#39;)">
-        <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="background:#F1EFE8;color:#444441;width:28px;height:28px;font-size:11px;">R</div>Radi</div></td>
-        <td>4</td>
-        <td>$7,046</td>
-        <td>$1,762</td>
-        <td class="pct-m">85%</td>
-        <td class="pct-h">138%</td>
-        <td class="neg">-$2,533</td>
-      </tr><tr style="cursor:pointer;" onclick="openReport(&#39;hamilton&#39;)">
-        <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar" style="background:#FBEAF0;color:#72243E;width:28px;height:28px;font-size:11px;">H</div>Hamilton</div></td>
-        <td>2</td>
-        <td>$1,650</td>
-        <td>$825</td>
-        <td class="pct-m">85%</td>
-        <td class="pct-h">131%</td>
-        <td class="neg">-$516</td>
-      </tr>
-    </tbody></table>
-    <div class="dash-cards-mobile" style="display:none;">
-    <div class="card-sm" style="cursor:pointer;" onclick="openReport(&#39;ronald&#39;)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div class="avatar" style="background:#E6F1FB;color:#0C447C;width:36px;height:36px;font-size:13px;">R</div>
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:600;">Ronald</div>
-            <div style="font-size:11px;color:#aaa;">44 weeks · avg wage 57%</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:13px;font-weight:600;">$1,789<span style="font-size:10px;font-weight:400;color:#aaa;">/wk</span></div>
-            <div style="font-size:11px;color:#3b6d11;background:#eaf3de;padding:1px 6px;border-radius:4px;margin-top:2px;">$8,847</div>
-          </div>
-        </div>
-      </div><div class="card-sm" style="cursor:pointer;" onclick="openReport(&#39;mona&#39;)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div class="avatar" style="background:#E1F5EE;color:#085041;width:36px;height:36px;font-size:13px;">M</div>
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:600;">Mona</div>
-            <div style="font-size:11px;color:#aaa;">48 weeks · avg wage 63%</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:13px;font-weight:600;">$2,856<span style="font-size:10px;font-weight:400;color:#aaa;">/wk</span></div>
-            <div style="font-size:11px;color:#3b6d11;background:#eaf3de;padding:1px 6px;border-radius:4px;margin-top:2px;">$6,446</div>
-          </div>
-        </div>
-      </div><div class="card-sm" style="cursor:pointer;" onclick="openReport(&#39;helen&#39;)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div class="avatar" style="background:#FAEEDA;color:#633806;width:36px;height:36px;font-size:13px;">H</div>
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:600;">Helen</div>
-            <div style="font-size:11px;color:#aaa;">48 weeks · avg wage 57%</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:13px;font-weight:600;">$1,320<span style="font-size:10px;font-weight:400;color:#aaa;">/wk</span></div>
-            <div style="font-size:11px;color:#3b6d11;background:#eaf3de;padding:1px 6px;border-radius:4px;margin-top:2px;">$8,073</div>
-          </div>
-        </div>
-      </div><div class="card-sm" style="cursor:pointer;" onclick="openReport(&#39;majid&#39;)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div class="avatar" style="background:#EEEDFE;color:#3C3489;width:36px;height:36px;font-size:13px;">M</div>
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:600;">Majid</div>
-            <div style="font-size:11px;color:#aaa;">8 weeks · avg wage 69%</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:13px;font-weight:600;">$3,350<span style="font-size:10px;font-weight:400;color:#aaa;">/wk</span></div>
-            <div style="font-size:11px;color:#a32d2d;background:#fcebeb;padding:1px 6px;border-radius:4px;margin-top:2px;">-$862</div>
-          </div>
-        </div>
-      </div><div class="card-sm" style="cursor:pointer;" onclick="openReport(&#39;jeni&#39;)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div class="avatar" style="background:#FCEBEB;color:#791F1F;width:36px;height:36px;font-size:13px;">J</div>
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:600;">Jeni</div>
-            <div style="font-size:11px;color:#aaa;">25 weeks · avg wage 71%</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:13px;font-weight:600;">$1,478<span style="font-size:10px;font-weight:400;color:#aaa;">/wk</span></div>
-            <div style="font-size:11px;color:#a32d2d;background:#fcebeb;padding:1px 6px;border-radius:4px;margin-top:2px;">-$5,013</div>
-          </div>
-        </div>
-      </div><div class="card-sm" style="cursor:pointer;" onclick="openReport(&#39;radi&#39;)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div class="avatar" style="background:#F1EFE8;color:#444441;width:36px;height:36px;font-size:13px;">R</div>
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:600;">Radi</div>
-            <div style="font-size:11px;color:#aaa;">4 weeks · avg wage 85%</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:13px;font-weight:600;">$1,762<span style="font-size:10px;font-weight:400;color:#aaa;">/wk</span></div>
-            <div style="font-size:11px;color:#a32d2d;background:#fcebeb;padding:1px 6px;border-radius:4px;margin-top:2px;">-$2,533</div>
-          </div>
-        </div>
-      </div><div class="card-sm" style="cursor:pointer;" onclick="openReport(&#39;hamilton&#39;)">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-          <div class="avatar" style="background:#FBEAF0;color:#72243E;width:36px;height:36px;font-size:13px;">H</div>
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:600;">Hamilton</div>
-            <div style="font-size:11px;color:#aaa;">2 weeks · avg wage 85%</div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:13px;font-weight:600;">$825<span style="font-size:10px;font-weight:400;color:#aaa;">/wk</span></div>
-            <div style="font-size:11px;color:#a32d2d;background:#fcebeb;padding:1px 6px;border-radius:4px;margin-top:2px;">-$516</div>
-          </div>
-        </div>
-      </div>
-    </div></div>
+    <div id="dash-staff-list"></div>
   </div>
 </div>
 
@@ -332,12 +177,12 @@ tr:last-child td{border-bottom:none;}
 <!-- REPORT -->
 <div class="page" id="pg-report">
   <div class="no-print" style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;">
-    <button class="btn btn-sm" onclick="showPage(&#39;staff&#39;)">← Back</button>
+    <button class="btn btn-sm" onclick="showPage('staff')">← Back</button>
     <div style="flex:1;font-size:18px;font-weight:600;" id="report-name"></div>
     <div class="ytabs" id="report-ytabs" style="margin-bottom:0;"></div>
     <div class="report-tabs">
-      <div class="rtab active" onclick="switchView(&#39;internal&#39;)" id="rv-internal">Internal</div>
-      <div class="rtab" onclick="switchView(&#39;staff-view&#39;)" id="rv-staff-view">Staff view</div>
+      <div class="rtab active" onclick="switchView('internal')" id="rv-internal">Internal</div>
+      <div class="rtab" onclick="switchView('staff-view')" id="rv-staff-view">Staff view</div>
     </div>
     <button class="btn btn-dark btn-sm" onclick="window.print()">Print</button>
   </div>
@@ -1523,6 +1368,5 @@ setTimeout(handleResize, 200);
 document.getElementById('last-updated').textContent = 'Updated: '+new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
 renderDashboard();
 </script>
-
-
-</body></html>
+</body>
+</html>
