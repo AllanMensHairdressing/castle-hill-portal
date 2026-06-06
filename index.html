@@ -329,17 +329,27 @@ function buildDash(){
 }
 function setDY(y){curYear=y;killCharts();buildDash();}
 
+function copyLink(url, name){
+  navigator.clipboard.writeText(url).then(()=>{
+    alert(name+"'s personal report link copied!\n\n"+url+"\n\nSend this link to "+name+" via WhatsApp or email.");
+  }).catch(()=>{
+    prompt("Copy this link and send to "+name+":", url);
+  });
+}
+
 function buildStaffList(){
   document.getElementById('staff-list').innerHTML=STAFF.map((s,i)=>{
     const ly=yrs(s);const lat=ly[ly.length-1]||'2025-26';const w=allW(s,lat);
     const totTO=w.reduce((a,x)=>a+x.t,0),totPr=w.reduce((a,x)=>a+x.pr,0),awp=w.length?w.reduce((a,x)=>a+x.wp,0)/w.length:0;
     const pc2=totPr>=0?'#3b6d11':'#a32d2d',bg2=totPr>=0?'#eaf3de':'#fcebeb';
-    return `<div class="sc" onclick="openReport('${s.id}')">
-      <div class="avt" style="background:${s.c.bg};color:${s.c.fg};">${ini(s.name)}</div>
-      <div style="flex:1;"><div style="font-size:14px;font-weight:600;">${s.name}</div><div style="font-size:11px;color:#aaa;">${s.role} · ${ly.length} year${ly.length!==1?'s':''} · ${w.length} weeks (${lat})</div></div>
-      <div style="text-align:right;">
-        <div style="font-size:13px;font-weight:600;">${w.length?$f(Math.round(totTO/w.length)):'-'}<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div>
-        <div style="font-size:11px;padding:2px 6px;border-radius:4px;background:${bg2};color:${pc2};margin-top:2px;">${$f(totPr)}</div>
+    const shareLink=`https://AllanMensHairdressing.github.io/castle-hill-portal/${s.id}.html`;
+    return `<div class="sc">
+      <div class="avt" style="background:${s.c.bg};color:${s.c.fg};" onclick="openReport('${s.id}')">${ini(s.name)}</div>
+      <div style="flex:1;cursor:pointer;" onclick="openReport('${s.id}')"><div style="font-size:14px;font-weight:600;">${s.name}</div><div style="font-size:11px;color:#aaa;">${s.role} · ${ly.length} year${ly.length!==1?'s':''} · ${w.length} weeks (${lat})</div></div>
+      <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <div style="font-size:13px;font-weight:600;" onclick="openReport('${s.id}')">${w.length?$f(Math.round(totTO/w.length)):'-'}<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div>
+        <div style="font-size:11px;padding:2px 6px;border-radius:4px;background:${bg2};color:${pc2};" onclick="openReport('${s.id}')">${$f(totPr)}</div>
+        <button onclick="copyLink('${shareLink}','${s.name}')" style="font-size:11px;padding:3px 8px;border-radius:5px;border:1px solid #ddd;background:#fff;cursor:pointer;color:#185FA5;">📋 Copy staff link</button>
       </div>
     </div>`;
   }).join('');
