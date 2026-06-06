@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0045)file:///C:/Users/Admin/Downloads/index_5.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Castle Hill — Staff Performance</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="./index_files/chart.umd.js.download"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;font-size:14px;}
@@ -76,26 +76,30 @@ td:first-child{text-align:left;color:#666;}
 <body>
 <div class="topbar noprint">
   <div class="brand">Castle Hill <span>Barbershop</span></div>
-  <div class="tab on" onclick="showPage('dash')" id="t-dash">Dashboard</div>
-  <div class="tab" onclick="showPage('staff')" id="t-staff">Staff</div>
-  <div style="margin-left:auto;font-size:12px;color:#aaa;" id="upd"></div>
+  <div class="tab on" onclick="showPage(&#39;dash&#39;)" id="t-dash">Dashboard</div>
+  <div class="tab" onclick="showPage(&#39;staff&#39;)" id="t-staff">Staff</div>
+  <div style="margin-left:auto;font-size:12px;color:#aaa;" id="upd">Updated: 6 June 2026</div>
 </div>
 <div class="app">
 
 <div class="page on" id="pg-dash">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;">
     <div><div style="font-size:20px;font-weight:600;">Staff performance</div><div style="font-size:12px;color:#888;margin-top:2px;">Castle Hill · Current financial year</div></div>
-    <div class="yt" id="dash-yt"></div>
+    <div class="yt" id="dash-yt"><div class="ytb" onclick="setDY(&#39;2023-24&#39;)">2023-24</div><div class="ytb" onclick="setDY(&#39;2024-25&#39;)">2024-25</div><div class="ytb on" onclick="setDY(&#39;2025-26&#39;)">2025-26</div></div>
   </div>
-  <div class="g4" id="dash-met" style="margin-bottom:1rem;"></div>
+  <div class="g4" id="dash-met" style="margin-bottom:1rem;">
+    <div class="met"><div class="ml">Staff with data</div><div class="mv">7</div><div class="ms">of 7 total</div></div>
+    <div class="met"><div class="ml">Total turnover</div><div class="mv">$351,581</div><div class="ms">2025-26</div></div>
+    <div class="met" style="background:#eaf3de;"><div class="ml" style="color:#3b6d11;">Net profit/loss</div><div class="mv" style="color:#3b6d11;">$14,442</div></div>
+    <div class="met"><div class="ml">Avg wage %</div><div class="mv" style="color:#a32d2d;">62%</div><div class="ms">target: 45%</div></div></div>
   <div class="g2" style="margin-bottom:1rem;">
-    <div class="card"><div class="sl">Monthly turnover by staff</div><div style="position:relative;height:220px;"><canvas id="dc1" role="img" aria-label="Monthly turnover chart"></canvas></div></div>
-    <div class="card"><div class="sl">Avg wage % vs 45% target</div><div style="position:relative;height:220px;"><canvas id="dc2" role="img" aria-label="Wage percentage chart"></canvas></div></div>
+    <div class="card"><div class="sl">Monthly turnover by staff</div><div style="position:relative;height:220px;"><canvas id="dc1" role="img" aria-label="Monthly turnover chart" width="482" height="220" style="display: block; box-sizing: border-box; height: 220px; width: 482px;"></canvas></div></div>
+    <div class="card"><div class="sl">Avg wage % vs 45% target</div><div style="position:relative;height:220px;"><canvas id="dc2" role="img" aria-label="Wage percentage chart" width="482" height="220" style="display: block; box-sizing: border-box; height: 220px; width: 482px;"></canvas></div></div>
   </div>
   <div class="card0">
     <div style="padding:12px 14px;border-bottom:1px solid #e5e5e3;font-size:13px;font-weight:600;">Staff overview — tap to view report</div>
-    <div class="dash-tbl" style="overflow-x:auto;"><table id="dash-tbl-body"></table></div>
-    <div class="dash-cards" style="display:none;padding:12px;" id="dash-cards"></div>
+    <div class="dash-tbl" style="overflow-x:auto;"><table id="dash-tbl-body"><thead><tr><th style="text-align:left;">Staff</th><th>Weeks</th><th>Total turnover</th><th>Avg/week</th><th>Avg wage%</th><th>Avg cost%</th><th>Total profit/loss</th></tr></thead><tbody><tr style="cursor:pointer;" onclick="openReport(&#39;ronald&#39;)"><td><div style="display:flex;align-items:center;gap:8px;"><div class="avt" style="background:#E6F1FB;color:#0C447C;width:28px;height:28px;font-size:11px;">R</div>Ronald</div></td><td>44</td><td>$78,704</td><td>$1,789</td><td class="pg">57%</td><td class="pm">93%</td><td class="pos">$8,847</td></tr><tr style="cursor:pointer;" onclick="openReport(&#39;mona&#39;)"><td><div style="display:flex;align-items:center;gap:8px;"><div class="avt" style="background:#E1F5EE;color:#085041;width:28px;height:28px;font-size:11px;">M</div>Mona</div></td><td>48</td><td>$137,095</td><td>$2,856</td><td class="pm">63%</td><td class="pm">97%</td><td class="pos">$6,446</td></tr><tr style="cursor:pointer;" onclick="openReport(&#39;helen&#39;)"><td><div style="display:flex;align-items:center;gap:8px;"><div class="avt" style="background:#FAEEDA;color:#633806;width:28px;height:28px;font-size:11px;">H</div>Helen</div></td><td>48</td><td>$63,343</td><td>$1,320</td><td class="pg">57%</td><td class="pm">92%</td><td class="pos">$8,073</td></tr><tr style="cursor:pointer;" onclick="openReport(&#39;majid&#39;)"><td><div style="display:flex;align-items:center;gap:8px;"><div class="avt" style="background:#EEEDFE;color:#3C3489;width:28px;height:28px;font-size:11px;">M</div>Majid</div></td><td>8</td><td>$26,799</td><td>$3,350</td><td class="pm">69%</td><td class="ph">103%</td><td class="neg">-$862</td></tr><tr style="cursor:pointer;" onclick="openReport(&#39;jeni&#39;)"><td><div style="display:flex;align-items:center;gap:8px;"><div class="avt" style="background:#FCEBEB;color:#791F1F;width:28px;height:28px;font-size:11px;">J</div>Jeni</div></td><td>25</td><td>$36,944</td><td>$1,478</td><td class="pm">71%</td><td class="ph">116%</td><td class="neg">-$5,013</td></tr><tr style="cursor:pointer;" onclick="openReport(&#39;radi&#39;)"><td><div style="display:flex;align-items:center;gap:8px;"><div class="avt" style="background:#F1EFE8;color:#444441;width:28px;height:28px;font-size:11px;">R</div>Radi</div></td><td>4</td><td>$7,046</td><td>$1,762</td><td class="pm">85%</td><td class="ph">138%</td><td class="neg">-$2,533</td></tr><tr style="cursor:pointer;" onclick="openReport(&#39;hamilton&#39;)"><td><div style="display:flex;align-items:center;gap:8px;"><div class="avt" style="background:#FBEAF0;color:#72243E;width:28px;height:28px;font-size:11px;">H</div>Hamilton</div></td><td>2</td><td>$1,650</td><td>$825</td><td class="pm">85%</td><td class="ph">131%</td><td class="neg">-$516</td></tr></tbody></table></div>
+    <div class="dash-cards" style="display:none;padding:12px;" id="dash-cards"><div class="sc" onclick="openReport(&#39;ronald&#39;)"><div class="avt" style="background:#E6F1FB;color:#0C447C;">R</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">Ronald</div><div style="font-size:11px;color:#aaa;">44 weeks · avg wage 57%</div></div><div style="text-align:right;"><div style="font-size:13px;font-weight:600;">$1,789<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div><div style="font-size:11px;padding:2px 6px;border-radius:4px;background:#eaf3de;color:#3b6d11;margin-top:2px;">$8,847</div></div></div><div class="sc" onclick="openReport(&#39;mona&#39;)"><div class="avt" style="background:#E1F5EE;color:#085041;">M</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">Mona</div><div style="font-size:11px;color:#aaa;">48 weeks · avg wage 63%</div></div><div style="text-align:right;"><div style="font-size:13px;font-weight:600;">$2,856<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div><div style="font-size:11px;padding:2px 6px;border-radius:4px;background:#eaf3de;color:#3b6d11;margin-top:2px;">$6,446</div></div></div><div class="sc" onclick="openReport(&#39;helen&#39;)"><div class="avt" style="background:#FAEEDA;color:#633806;">H</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">Helen</div><div style="font-size:11px;color:#aaa;">48 weeks · avg wage 57%</div></div><div style="text-align:right;"><div style="font-size:13px;font-weight:600;">$1,320<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div><div style="font-size:11px;padding:2px 6px;border-radius:4px;background:#eaf3de;color:#3b6d11;margin-top:2px;">$8,073</div></div></div><div class="sc" onclick="openReport(&#39;majid&#39;)"><div class="avt" style="background:#EEEDFE;color:#3C3489;">M</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">Majid</div><div style="font-size:11px;color:#aaa;">8 weeks · avg wage 69%</div></div><div style="text-align:right;"><div style="font-size:13px;font-weight:600;">$3,350<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div><div style="font-size:11px;padding:2px 6px;border-radius:4px;background:#fcebeb;color:#a32d2d;margin-top:2px;">-$862</div></div></div><div class="sc" onclick="openReport(&#39;jeni&#39;)"><div class="avt" style="background:#FCEBEB;color:#791F1F;">J</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">Jeni</div><div style="font-size:11px;color:#aaa;">25 weeks · avg wage 71%</div></div><div style="text-align:right;"><div style="font-size:13px;font-weight:600;">$1,478<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div><div style="font-size:11px;padding:2px 6px;border-radius:4px;background:#fcebeb;color:#a32d2d;margin-top:2px;">-$5,013</div></div></div><div class="sc" onclick="openReport(&#39;radi&#39;)"><div class="avt" style="background:#F1EFE8;color:#444441;">R</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">Radi</div><div style="font-size:11px;color:#aaa;">4 weeks · avg wage 85%</div></div><div style="text-align:right;"><div style="font-size:13px;font-weight:600;">$1,762<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div><div style="font-size:11px;padding:2px 6px;border-radius:4px;background:#fcebeb;color:#a32d2d;margin-top:2px;">-$2,533</div></div></div><div class="sc" onclick="openReport(&#39;hamilton&#39;)"><div class="avt" style="background:#FBEAF0;color:#72243E;">H</div><div style="flex:1;"><div style="font-size:14px;font-weight:600;">Hamilton</div><div style="font-size:11px;color:#aaa;">2 weeks · avg wage 85%</div></div><div style="text-align:right;"><div style="font-size:13px;font-weight:600;">$825<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></div><div style="font-size:11px;padding:2px 6px;border-radius:4px;background:#fcebeb;color:#a32d2d;margin-top:2px;">-$516</div></div></div></div>
   </div>
 </div>
 
@@ -106,12 +110,12 @@ td:first-child{text-align:left;color:#666;}
 
 <div class="page" id="pg-report">
   <div class="noprint" style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
-    <button class="btn btnsm" onclick="showPage('staff')">← Back</button>
+    <button class="btn btnsm" onclick="showPage(&#39;staff&#39;)">← Back</button>
     <div style="flex:1;font-size:17px;font-weight:600;" id="rname"></div>
     <div class="yt" id="rep-yt" style="margin-bottom:0;"></div>
     <div class="rv">
-      <div class="rvb on" onclick="switchView('int')" id="rv-int">Internal</div>
-      <div class="rvb" onclick="switchView('stf')" id="rv-stf">Staff view</div>
+      <div class="rvb on" onclick="switchView(&#39;int&#39;)" id="rv-int">Internal</div>
+      <div class="rvb" onclick="switchView(&#39;stf&#39;)" id="rv-stf">Staff view</div>
     </div>
     <button class="btn btndk btnsm" onclick="window.print()">Print</button>
   </div>
@@ -515,5 +519,6 @@ function renderCharts(v){
 document.getElementById('upd').textContent='Updated: '+new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
 buildDash();
 </script>
-</body>
-</html>
+
+
+</body></html>
