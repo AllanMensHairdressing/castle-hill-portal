@@ -100,6 +100,10 @@ tr:last-child td{border-bottom:none;}
   body{background:#fff;}
 }
 
+@media (max-width: 900px) {
+  .dash-table-wrap{display:none!important;}
+  .dash-cards-mobile{display:flex!important;flex-direction:column;gap:8px;}
+}
 @media (max-width: 768px) {
   .app{padding:.75rem;}
   .topbar{padding:0 .75rem;}
@@ -109,8 +113,6 @@ tr:last-child td{border-bottom:none;}
   .g3{grid-template-columns:1fr 1fr;}
   .g4{grid-template-columns:1fr 1fr;}
   .staff-grid{grid-template-columns:1fr;}
-  .dash-table-wrap{display:none!important;}
-  .dash-cards-mobile{display:flex!important;flex-direction:column;gap:8px;}
   .report-tabs{gap:4px;}
   .rtab{padding:5px 8px;font-size:11px;}
   .ytabs{gap:4px;}
@@ -1268,71 +1270,75 @@ function buildReport(){
       <div class="insight insight-a">
         <strong>Breakeven target:</strong> ${s.name} needs approx. <strong>${fmt$(breakeven)}/week</strong> in turnover to cover wages + fixed costs at current levels.
       </div>
-    </div>`;
-
-  // ---- STAFF VIEW ----
-  const target = breakeven;
-  const maxBar = Math.max(...weeks.map(w=>w.turnover), target)*1.15;
-  const ac = s.color;
-
-  const weekBars = weeks.map(w=>{
-    const pct = Math.min((w.turnover/maxBar)*100,100);
-    const tpct = Math.min((target/maxBar)*100,100);
-    const hit = w.turnover>=target;
-    const close = w.turnover>=target*0.85;
-    const col = hit?'#639922':close?'#EF9F27':'#E24B4A';
-    const bBg = hit?'#eaf3de':close?'#faeeda':'#fcebeb';
-    const bFg = hit?'#3b6d11':close?'#854f0b':'#a32d2d';
-    const lbl = hit?'Target met':close?'Close':'Below target';
-    return `<div style="margin-bottom:14px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;">
-        <span style="font-size:12px;color:#888;width:120px;">${w.date}</span>
-        <span style="font-size:14px;font-weight:600;flex:1;padding:0 8px;">${fmt$(w.turnover)}</span>
-        <span style="font-size:11px;font-weight:500;padding:2px 8px;border-radius:4px;background:${bBg};color:${bFg};">${lbl}</span>
-      </div>
-      <div style="position:relative;height:8px;background:#f0f0ee;border-radius:4px;">
-        <div style="height:8px;width:${pct}%;background:${col};border-radius:4px;"></div>
-        <div style="position:absolute;top:-3px;left:${tpct}%;width:2px;height:14px;background:#854f0b;border-radius:1px;"></div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const weeksHit = weeks.filter(w=>w.turnover>=target).length;
-  const hitPct = Math.round((weeksHit/weeks.length)*100);
-
-  document.getElementById('view-staff-view').innerHTML = `
-    <div class="card" style="margin-bottom:1.25rem;">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid #f0f0ee;">
-        <div class="avatar" style="width:48px;height:48px;font-size:16px;background:${ac.bg};color:${ac.fg};">${initials(s.name)}</div>
-        <div>
-          <div style="font-size:18px;font-weight:600;">${s.name}</div>
-          <div style="font-size:12px;color:#aaa;">${s.role} · Performance report · ${currentReportYear}</div>
-        </div>
-      </div>
-      <div class="g3">
-        <div class="metric"><div class="metric-label">Total turnover</div><div class="metric-val">${fmt$(totTO)}</div><div class="metric-sub">${fmt$(Math.round(avgTO))} avg/week</div></div>
-        <div class="metric"><div class="metric-label">Best week</div><div class="metric-val" style="color:#3b6d11;">${fmt$(bestWeek.turnover)}</div><div class="metric-sub">${bestWeek.date}</div></div>
-        <div class="metric"><div class="metric-label">Weekly target</div><div class="metric-val" style="color:#854f0b;">${fmt$(target)}</div><div class="metric-sub">to cover all costs</div></div>
-      </div>
     </div>
     <div class="card" style="margin-bottom:1.25rem;">
-      <div class="slabel">Weekly performance vs target (${fmt$(target)})</div>
-      ${weekBars}
-    </div>
-    <div class="card" style="margin-bottom:1.25rem;">
-      <div class="slabel">Turnover trend</div>
-      <div style="position:relative;height:200px;"><canvas id="sc-chart1" role="img" aria-label="Weekly turnover trend for ${s.name}">Weekly turnover trend.</canvas></div>
-      <div style="display:flex;gap:14px;margin-top:8px;font-size:11px;color:#888;">
-        <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#378ADD;display:inline-block;"></span>Turnover</span>
-        <span style="display:flex;align-items:center;gap:4px;"><span style="width:16px;height:2px;border-top:2px dashed #854f0b;display:inline-block;"></span>Target ${fmt$(target)}</span>
+      <div class="slabel" style="margin-bottom:12px;">Monthly breakdown — ${currentReportYear}</div>
+      <div id="monthly-table"></div>
+      <div style="margin-top:14px;">
+        <div class="slabel" style="margin-bottom:10px;">Monthly avg/week vs breakeven</div>
+        <div id="monthly-bars"></div>
       </div>
-    </div>
-    <div class="insight ${hitPct>=70?'insight-g':hitPct>=40?'insight-a':'insight-r'}">
-      <strong>This period:</strong> ${s.name} hit target in <strong>${weeksHit} of ${weeks.length} weeks</strong> (${hitPct}%). 
-      ${hitPct>=70?'Great consistency — keep it up!':hitPct>=40?`Getting there — aim for ${fmt$(target)} or more every week.`:`Needs improvement — the target is ${fmt$(target)}/week. Your best was ${fmt$(bestWeek.turnover)}, which shows what's possible.`}
-    </div>`;
-
-  window._reportData = {weeks, target, s};
+    </div>`;window._reportData = {weeks, target, s};
+  
+  // Build monthly table
+  const monthOrder = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+  const ydata = s.years[currentReportYear]||{};
+  
+  setTimeout(()=>{
+    const tbl = document.getElementById('monthly-table');
+    const bars = document.getElementById('monthly-bars');
+    if(!tbl||!bars) return;
+    
+    let tableHTML = '<div style="overflow-x:auto;"><table><thead><tr><th style="width:60px;text-align:left;">Month</th><th>Weeks</th><th>Turnover</th><th>Avg/wk</th><th>Wages</th><th>Op.exp</th><th>Wage%</th><th>Cost%</th><th>Profit/loss</th></tr></thead><tbody>';
+    let barsHTML = '';
+    
+    monthOrder.filter(m=>ydata[m]).forEach(m=>{
+      const mweeks = (ydata[m].weeks||[]).map(calcWeek);
+      if(!mweeks.length) return;
+      const n = mweeks.length;
+      const mTO = mweeks.reduce((a,w)=>a+w.turnover,0);
+      const mWage = mweeks.reduce((a,w)=>a+w.wage,0);
+      const mOpex = mweeks.reduce((a,w)=>a+w.opexp,0);
+      const mCost = mweeks.reduce((a,w)=>a+w.totalCost,0);
+      const mProfit = mweeks.reduce((a,w)=>a+w.profit,0);
+      const mWagePct = mTO>0?(mWage/mTO)*100:0;
+      const mCostPct = mTO>0?(mCost/mTO)*100:0;
+      const avgTO = mTO/n;
+      
+      tableHTML += '<tr>';
+      tableHTML += '<td style="font-weight:500;">'+m+'</td>';
+      tableHTML += '<td>'+n+'</td>';
+      tableHTML += '<td>'+fmt$(mTO)+'</td>';
+      tableHTML += '<td style="font-weight:500;">'+fmt$(Math.round(avgTO))+'</td>';
+      tableHTML += '<td>'+fmt$(mWage)+'</td>';
+      tableHTML += '<td>'+fmt$(mOpex)+'</td>';
+      tableHTML += '<td class="'+pctClass(mWagePct)+'">'+fmtPct(mWagePct)+'</td>';
+      tableHTML += '<td class="'+pctClass(mCostPct)+'">'+fmtPct(mCostPct)+'</td>';
+      tableHTML += '<td class="'+profitClass(mProfit)+'">'+fmt$(mProfit)+'</td>';
+      tableHTML += '</tr>';
+      
+      const barPct = Math.min((avgTO/target)*100, 130);
+      const col = avgTO>=target?'#639922':avgTO>=target*0.85?'#EF9F27':'#E24B4A';
+      const bgCol = avgTO>=target?'#eaf3de':avgTO>=target*0.85?'#faeeda':'#fcebeb';
+      const txtCol = avgTO>=target?'#3b6d11':avgTO>=target*0.85?'#854f0b':'#a32d2d';
+      const lbl = avgTO>=target?'Above target':'Below target';
+      
+      barsHTML += '<div style="margin-bottom:10px;">';
+      barsHTML += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">';
+      barsHTML += '<span style="font-size:12px;font-weight:500;width:40px;">'+m+'</span>';
+      barsHTML += '<span style="font-size:13px;font-weight:500;flex:1;padding:0 8px;">'+fmt$(Math.round(avgTO))+'<span style="font-size:11px;font-weight:400;color:#aaa;">/wk</span></span>';
+      barsHTML += '<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:'+bgCol+';color:'+txtCol+';">'+lbl+'</span>';
+      barsHTML += '</div>';
+      barsHTML += '<div style="position:relative;height:8px;background:#f0f0ee;border-radius:4px;">';
+      barsHTML += '<div style="height:8px;width:'+Math.min(barPct,100)+'%;background:'+col+';border-radius:4px;"></div>';
+      barsHTML += '<div style="position:absolute;top:-3px;left:min(100%,99%);width:2px;height:14px;background:#854f0b;border-radius:1px;"></div>';
+      barsHTML += '</div></div>';
+    });
+    
+    tableHTML += '</tbody></table></div>';
+    tbl.innerHTML = tableHTML;
+    bars.innerHTML = barsHTML;
+  }, 150);
 }
 
 function renderReportCharts(v){
