@@ -1284,7 +1284,7 @@ function buildReport(){
   const monthOrder = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
   const ydata = s.years[currentReportYear]||{};
   
-  setTimeout(()=>{
+  window._buildMonthly = function(){
     const tbl = document.getElementById('monthly-table');
     const bars = document.getElementById('monthly-bars');
     if(!tbl||!bars) return;
@@ -1338,10 +1338,12 @@ function buildReport(){
     tableHTML += '</tbody></table></div>';
     tbl.innerHTML = tableHTML;
     bars.innerHTML = barsHTML;
-  }, 150);
+  };
+  window._buildMonthly();
 }
 
 function renderReportCharts(v){
+  if(v==='internal' && window._buildMonthly) setTimeout(window._buildMonthly, 50);
   if(!window._reportData) return;
   const {weeks, target, s} = window._reportData;
   const labels = weeks.map(w=>w.date.replace(/\s\d{4}/,'').replace(/^\d+-/,''));
